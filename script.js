@@ -57,8 +57,26 @@ const countNeighbors = tile => {
 	return dangerCount;
 }
 
-const incrementNeighbors = tile => {
-	console.log();
+const incrementNeighbors = (x, y) => {
+	for (let i = 0; i < 3; i++) {
+		// ensure we're not going to access a negative or out of range index
+		let _y = y + (i - 1);
+		if (0 <= _y && _y < 20) {
+			for (let j = 0; j < 3; j++) {
+				// ensure we're not going to access a negative or out of range index
+				let _x = x + (j - 1);
+				if (0 <= _x && _x < 20) {
+					let idStr = `#tile_${_y}_${_x}`;
+					neighby = document.querySelector(idStr);
+					if (neighby.innerText != MINEASCII) {
+						let nval = parseInt(neighby.innerText)
+						neighby.innerText = nval + 1;
+						neighby.style.color = COLORS[nval];
+					}
+				}
+			}
+		}
+	}
 }
 
 const plant = (x, y) => {
@@ -66,25 +84,7 @@ const plant = (x, y) => {
 	if (tile.innerText != MINEASCII) {
 		tile.innerText = MINEASCII;
 		tile.style.color = 'rgb(0, 0, 0)'
-		for (let i = 0; i < 3; i++) {
-			// ensure we're not going to access a negative or out of range index
-			let _y = y + (i - 1);
-			if (0 <= _y && _y < 20) {
-				for (let j = 0; j < 3; j++) {
-					// ensure we're not going to access a negative or out of range index
-					let _x = x + (j - 1);
-					if (0 <= _x && _x < 20) {
-						let idStr = `#tile_${_y}_${_x}`;
-						neighby = document.querySelector(idStr);
-						if (neighby.innerText != MINEASCII) {
-							let nval = parseInt(neighby.innerText)
-							neighby.innerText = nval + 1;
-							neighby.style.color = COLORS[nval];
-						}
-					}
-				}
-			}
-		}
+		incrementNeighbors(x, y);
 		return true;
 	}
 	return false;
