@@ -34,11 +34,15 @@ header {
 	cursor: default;
 }
 
+.game {
+	margin: auto;
+
+}
+
 .sub {
 	text-align: center;
 	font-family: 'Jua';
 	color: azure;
-	transform: translate(0, 666%);
 	cursor: default;
 }
 
