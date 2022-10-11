@@ -7,7 +7,7 @@ const sub = document.querySelector('.sub')
 const COLOR1 = '#dcd6d6';
 const COLOR2 = '#cbc0c8';
 
-const MINEASCII = '::';
+const MINEASCII = 'ϴ';
 
 const COLORS = [
 	'rgb(24, 137, 230)',
@@ -21,6 +21,7 @@ const COLORS = [
 ]
 
 let GG = false;
+const PLANTSPEED = 75;
 
 const countNeighbors = tile => {
 	const splitId = tile.id.split('_')
@@ -58,7 +59,7 @@ const incrementNeighbors = tile => {
 	console.log();
 }
 
-const plantMines = numMines => {
+const plantMines = async numMines => {
 	for (let m = 0; m < numMines; m++) {
 		let rx = Math.floor(Math.random() * WIDTH);
 		let ry = Math.floor(Math.random() * HEIGHT);
@@ -85,6 +86,7 @@ const plantMines = numMines => {
 					}
 				}
 			}
+			await new Promise(r => setTimeout(r, PLANTSPEED));
 		} else {
 			m--;
 		}
@@ -123,4 +125,4 @@ const initTiles = () => {
 }
 
 initTiles();
-plantMines(40);
+plantMines(60);
