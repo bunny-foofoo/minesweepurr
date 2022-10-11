@@ -23,10 +23,12 @@ const COLORS = [
 let GG = false;
 const PLANTSPEED = 75;
 
+let painting = true;
+
 const countNeighbors = tile => {
 	const splitId = tile.id.split('_')
-	const x = parseInt(splitId[1]);
-	const y = parseInt(splitId[2]);
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
 
 	// num mines nearby
 	let dangerCount = 0;
@@ -59,33 +61,41 @@ const incrementNeighbors = tile => {
 	console.log();
 }
 
-const plantMines = async numMines => {
-	for (let m = 0; m < numMines; m++) {
-		let rx = Math.floor(Math.random() * WIDTH);
-		let ry = Math.floor(Math.random() * HEIGHT);
-		const tile = document.querySelector(`#tile_${ry}_${rx}`);
-		if (tile.innerText != MINEASCII) {
-			tile.innerText = MINEASCII;
-			tile.style.color = 'rgb(0, 0, 0)'
-			for (let i = 0; i < 3; i++) {
-				// ensure we're not going to access a negative or out of range index
-				let _y = ry + (i - 1);
-				if (0 <= _y && _y < 20) {
-					for (let j = 0; j < 3; j++) {
-						// ensure we're not going to access a negative or out of range index
-						let _x = rx + (j - 1);
-						if (0 <= _x && _x < 20) {
-							let idStr = `#tile_${_y}_${_x}`;
-							neighby = document.querySelector(idStr);
-							if (neighby.innerText != MINEASCII) {
-								let nval = parseInt(neighby.innerText)
-								neighby.innerText = nval + 1;
-								neighby.style.color = COLORS[nval];
-							}
+const plant = (x, y) => {
+	const tile = document.querySelector(`#tile_${y}_${x}`);
+	if (tile.innerText != MINEASCII) {
+		tile.innerText = MINEASCII;
+		tile.style.color = 'rgb(0, 0, 0)'
+		for (let i = 0; i < 3; i++) {
+			// ensure we're not going to access a negative or out of range index
+			let _y = y + (i - 1);
+			if (0 <= _y && _y < 20) {
+				for (let j = 0; j < 3; j++) {
+					// ensure we're not going to access a negative or out of range index
+					let _x = x + (j - 1);
+					if (0 <= _x && _x < 20) {
+						let idStr = `#tile_${_y}_${_x}`;
+						neighby = document.querySelector(idStr);
+						if (neighby.innerText != MINEASCII) {
+							let nval = parseInt(neighby.innerText)
+							neighby.innerText = nval + 1;
+							neighby.style.color = COLORS[nval];
 						}
 					}
 				}
 			}
+		}
+		return true;
+	}
+	return false;
+}
+
+const plantMines = async numMines => {
+	for (let m = 0; m < numMines; m++) {
+		let rx = Math.floor(Math.random() * WIDTH);
+		let ry = Math.floor(Math.random() * HEIGHT);
+		let planted = plant(rx, ry);
+		if (planted) {
 			await new Promise(r => setTimeout(r, PLANTSPEED));
 		} else {
 			m--;
@@ -95,6 +105,13 @@ const plantMines = async numMines => {
 
 const clickEvent = e => {
 	if (GG) return;
+
+	if (painting) {
+		const splitId = e.target.id.split('_')
+		const y = parseInt(splitId[1]);
+		const x = parseInt(splitId[2]);
+		return plant(x, y);
+	}
 	
 	if (e.target.innerText == MINEASCII) {
 		// clicked on a mine
@@ -125,4 +142,4 @@ const initTiles = () => {
 }
 
 initTiles();
-plantMines(60);
+if (!painting) plantMines(60);
