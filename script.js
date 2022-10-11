@@ -7,6 +7,8 @@ const sub = document.querySelector('.sub')
 const COLOR1 = '#dcd6d6';
 const COLOR2 = '#cbc0c8';
 
+const MINEASCII = '::';
+
 const COLORS = [
 	'rgb(24, 137, 230)',
 	'rgb(19, 205, 146)',
@@ -17,6 +19,8 @@ const COLORS = [
 	'rgb(224, 77, 226)',
 	'rgb(129, 34, 230)',
 ]
+
+let GG = false;
 
 const countNeighbors = tile => {
 	const splitId = tile.id.split('_')
@@ -50,31 +54,73 @@ const countNeighbors = tile => {
 	return dangerCount;
 }
 
-// fill minefield with tiles
-for (let i = 0; i < HEIGHT; i++) {
-	for (let j = 0; j < WIDTH; j++) {
-		const tile = document.createElement('div');
+const incrementNeighbors = tile => {
+	console.log();
+}
 
-		// Determine if tile is a mine
-		tile.innerText = Math.random() < 0.1 ? 'x' : '';
-
-		// checkerboard color
-		tile.style.backgroundColor = ((i + j) % 2 == 0) ? COLOR1 : COLOR2; 
-		tile.id = `tile_${i}_${j}`;
-		tile.classList.add('tile');
-		minefield.appendChild(tile);
-
-		tile.addEventListener('click', e => {
-			if (e.target.innerText == 'x') {
-				// clicked on a mine
-				sub.innerText = 'you died';
-				e.target.style.color = 'rgb(255, 75, 75)';
-			} else {
-				// todo: reveal neighbors if e.target is a 0
-				e.target.innerText = countNeighbors(e.target);
-				//e.target.style.color = 'rgba(115, 6, 6, 0.846)';
-				e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
+const plantMines = numMines => {
+	for (let m = 0; m < numMines; m++) {
+		let rx = Math.floor(Math.random() * WIDTH);
+		let ry = Math.floor(Math.random() * HEIGHT);
+		const tile = document.querySelector(`#tile_${ry}_${rx}`);
+		if (tile.innerText != MINEASCII) {
+			tile.innerText = MINEASCII;
+			tile.style.color = 'rgb(0, 0, 0)'
+			for (let i = 0; i < 3; i++) {
+				// ensure we're not going to access a negative or out of range index
+				let _y = ry + (i - 1);
+				if (0 <= _y && _y < 20) {
+					for (let j = 0; j < 3; j++) {
+						// ensure we're not going to access a negative or out of range index
+						let _x = rx + (j - 1);
+						if (0 <= _x && _x < 20) {
+							let idStr = `#tile_${_y}_${_x}`;
+							neighby = document.querySelector(idStr);
+							if (neighby.innerText != MINEASCII) {
+								let nval = parseInt(neighby.innerText)
+								neighby.innerText = nval + 1;
+								neighby.style.color = COLORS[nval];
+							}
+						}
+					}
+				}
 			}
-		})
+		} else {
+			m--;
+		}
 	}
 }
+
+const clickEvent = e => {
+	if (GG) return;
+	
+	if (e.target.innerText == MINEASCII) {
+		// clicked on a mine
+		GG = true;
+		sub.innerText = 'you died';
+		e.target.style.color = 'rgb(255, 75, 75)';
+	} else {
+		// todo: reveal neighbors if e.target is a 0
+	}
+}
+
+const initTiles = () => {
+	// fill minefield with tiles
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			const tile = document.createElement('div');
+			tile.classList.add('tile');
+			tile.id = `tile_${i}_${j}`;
+			tile.innerText = '0';
+
+			// checkerboard color
+			tile.style.backgroundColor = ((i + j) % 2 == 0) ? COLOR1 : COLOR2; 
+			
+			tile.addEventListener('click', clickEvent);
+			minefield.appendChild(tile);
+		}
+	}
+}
+
+initTiles();
+plantMines(40);
