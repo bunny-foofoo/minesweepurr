@@ -73,3 +73,8 @@ header {
 	cursor: default;
 	color: rgba(0,0,0,0)
 }
+
+.tile:hover {
+	outline: 1px solid grey;
+	z-index: 2;
+}
