@@ -39,7 +39,17 @@ header {
 	font-size: 7em;
 	font-family: 'Jua';
 	color:azure;
-	padding-top: 0.66em;
+	/* padding-top: 0.66em; */
+	transform: translate(0, 100%);
+	cursor: default;
+}
+
+.sub {
+	text-align: center;
+	font-family: 'Jua';
+	color: azure;
+	transform: translate(0, 666%);
+	cursor: default;
 }
 
 .minefield {
@@ -64,5 +74,7 @@ header {
 	display: block;
 	text-align: center;
 	margin: auto;
-	background-color: #cbc0c0;
+	/* background-color: #cbc0c0; */
+	cursor: default;
+	color: rgba(0,0,0,0)
 }
