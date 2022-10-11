@@ -7,6 +7,17 @@ const sub = document.querySelector('.sub')
 const COLOR1 = '#dcd6d6';
 const COLOR2 = '#cbc0c8';
 
+const COLORS = [
+	'rgb(24, 137, 230)',
+	'rgb(19, 205, 146)',
+	'rgb(46, 215, 16)',
+	'rgb(124, 153, 36)',
+	'rgb(176, 126, 2)',
+	'rgb(176, 31, 2)',
+	'rgb(224, 77, 226)',
+	'rgb(129, 34, 230)',
+]
+
 const countNeighbors = tile => {
 	const splitId = tile.id.split('_')
 	const x = parseInt(splitId[1]);
@@ -57,10 +68,12 @@ for (let i = 0; i < HEIGHT; i++) {
 			if (e.target.innerText == 'x') {
 				// clicked on a mine
 				sub.innerText = 'you died';
+				e.target.style.color = 'rgb(255, 75, 75)';
 			} else {
 				// todo: reveal neighbors if e.target is a 0
 				e.target.innerText = countNeighbors(e.target);
-				e.target.style.color = 'rgba(115, 6, 6, 0.846)';
+				//e.target.style.color = 'rgba(115, 6, 6, 0.846)';
+				e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
 			}
 		})
 	}
