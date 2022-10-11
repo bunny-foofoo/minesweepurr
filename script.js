@@ -12,42 +12,53 @@ const countNeighbors = tile => {
 	const x = parseInt(splitId[1]);
 	const y = parseInt(splitId[2]);
 
-	let neighbors = 0;
+	// num mines nearby
+	let dangerCount = 0;
 
 	for (let i = 0; i < 3; i++) {
+		// ensure we're not going to access a negative or out of range index
 		let _y = y + (i - 1);
-		if (0 <= _y && _y <= 20) {
+		if (0 <= _y && _y < 20) {
+
 			for (let j = 0; j < 3; j++) {
+				// ensure we're not going to access a negative or out of range index
 				let _x = x + (j - 1);
-				if (0 <= _x && _x <= 20) {
+				if (0 <= _x && _x < 20) {
+
 					let idStr = `#tile_${_y}_${_x}`;
-					console.log(idStr);
 					neighby = document.querySelector(idStr);
-					if (neighby.innerText == 'o') {
-						neighbors++;
+					if (neighby.innerText == 'x') {
+						dangerCount++;
 					}
+
 				}
 			}
 		}
 	}
 	
-	return neighbors;
+	return dangerCount;
 }
 
+// fill minefield with tiles
 for (let i = 0; i < HEIGHT; i++) {
 	for (let j = 0; j < WIDTH; j++) {
 		const tile = document.createElement('div');
-		//tile.innerText = `${i}`;
-		tile.innerText = Math.random() < 0.1 ? 'o' : '';
+
+		// Determine if tile is a mine
+		tile.innerText = Math.random() < 0.1 ? 'x' : '';
+
+		// checkerboard color
 		tile.style.backgroundColor = ((i + j) % 2 == 0) ? COLOR1 : COLOR2; 
-		tile.classList.add('tile');
 		tile.id = `tile_${i}_${j}`;
+		tile.classList.add('tile');
 		minefield.appendChild(tile);
 
 		tile.addEventListener('click', e => {
-			if (e.target.innerText == 'o') {
+			if (e.target.innerText == 'x') {
+				// clicked on a mine
 				sub.innerText = 'you died';
 			} else {
+				// todo: reveal neighbors if e.target is a 0
 				e.target.innerText = countNeighbors(e.target);
 				e.target.style.color = 'rgba(115, 6, 6, 0.846)';
 			}
