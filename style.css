@@ -1,0 +1,42 @@
+/* home page */
+
+html, body{
+	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	background-color:#06010b;
+	background: #1b0f29;
+	/* background-image: linear-gradient(15deg, rgba(245, 45, 138, 0.914), rgb(7, 0, 9)); */
+	/* background-image: linear-gradient(15deg, rgba(102, 45, 245, 0.85), rgb(7, 0, 9)); */
+	/* background-image: linear-gradient(15deg, rgba(245, 45, 98, 0.914), rgb(7, 0, 9)); */
+	background-image: linear-gradient(#12d0ff, rgb(38, 231, 245));
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+
+/* https://stackoverflow.com/a/16555510 */
+body {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+	-webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+header {
+	text-align: center;
+	font-size: 7em;
+	font-family: 'Jua';
+	padding-top: 0.66em;
+}
