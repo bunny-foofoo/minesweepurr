@@ -28,3 +28,4 @@
  * better tile text (it's ugly and too high)
  * better tile text colors (also fix the bug with them)
  * cute minefield border
+ * less unappealing page design
