@@ -180,6 +180,17 @@ const clickEvent = e => {
 	}
 }
 
+const mousein = e => {
+	if (GG) return;
+	e.target.style.outline = '1px solid grey';
+	e.target.style.zIndex = 2;
+}
+
+const mouseout = e => {
+	e.target.style.outline = '';
+	e.target.style.zIndex = 1;
+}
+
 const initTiles = () => {
 	// fill minefield with tiles
 	for (let i = 0; i < HEIGHT; i++) {
@@ -193,6 +204,8 @@ const initTiles = () => {
 			tile.style.backgroundColor = ((i + j) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 			
 			tile.addEventListener('click', clickEvent);
+			tile.addEventListener('mouseenter', mousein);
+			tile.addEventListener('mouseleave', mouseout);
 			minefield.appendChild(tile);
 		}
 	}

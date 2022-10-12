@@ -75,10 +75,12 @@ header {
 	font-size: 0;
 }
 
+/*
 .tile:hover {
 	outline: 1px solid grey;
-	z-index: 2;
+	-index: 2;
 }
+*/
 
 /* https://stackoverflow.com/a/4358620 */
 .game, .title {
