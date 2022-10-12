@@ -22,16 +22,16 @@ const COLORS = [
 
 let GG = false;
 const PLANTSPEED = 75;
-const NUMMINES = 60;
+const NUMMINES = 50;
 
-let painting = true;
+let painting = false;
 
 const makeVis = tile => {
 	tile.style.fontSize = '1em';
 }
 
 const makeInvis = tile => {
-	tile.style.fontSize = '0';
+	tile.style.fontSize = '0em';
 }
 
 const countNeighbors = tile => {
@@ -113,6 +113,35 @@ const plantMines = async () => {
 	}
 }
 
+const clearNeighbors = tile => {
+	const splitId = tile.id.split('_')
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
+	for (let i = 0; i < 3; i++) {
+		// ensure we're not going to access a negative or out of range index
+		let _y = y + (i - 1);
+		if (0 <= _y && _y < 20) {
+			for (let j = 0; j < 3; j++) {
+				// ensure we're not going to access a negative or out of range index
+				let _x = x + (j - 1);
+				if (0 <= _x && _x < 20) {
+					neighby = document.querySelector(`#tile_${_y}_${_x}`);
+
+					let isHidden = neighby.style.fontSize == 0 || neighby.style.fontSize == '0' || neighby.style.fontSize == '0em';
+					let isZero = neighby.innerText == '0';
+					let isLocalTile = neighby == tile;
+
+					makeVis(neighby);
+
+					if (isHidden && isZero && !isLocalTile) {
+						clearNeighbors(neighby);
+					}
+				}
+			}
+		}
+	}
+}
+
 const clickEvent = e => {
 	if (GG) return;
 
@@ -129,8 +158,12 @@ const clickEvent = e => {
 		sub.innerText = 'you died';
 		e.target.style.color = 'rgb(255, 75, 75)';
 	} else {
-		e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
-		makeVis(e.target);
+		if (e.target.innerText != '0') {
+			e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
+			makeVis(e.target);
+		} else {
+			clearNeighbors(e.target);
+		}
 	}
 }
 
