@@ -25,6 +25,14 @@ const PLANTSPEED = 75;
 
 let painting = true;
 
+const makeVis = tile => {
+	tile.style.fontSize = '1em';
+}
+
+const makeInvis = tile => {
+	tile.style.fontSize = '0';
+}
+
 const countNeighbors = tile => {
 	const splitId = tile.id.split('_')
 	const y = parseInt(splitId[1]);
@@ -73,6 +81,7 @@ const incrementNeighbors = (x, y) => {
 						neighby.innerText = nval + 1;
 						neighby.style.color = COLORS[nval];
 					}
+					if (painting) makeVis(neighby);
 				}
 			}
 		}
@@ -119,7 +128,8 @@ const clickEvent = e => {
 		sub.innerText = 'you died';
 		e.target.style.color = 'rgb(255, 75, 75)';
 	} else {
-		// todo: reveal neighbors if e.target is a 0
+		e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
+		makeVis(e.target);
 	}
 }
 
@@ -146,12 +156,15 @@ const clearField = () => {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			tile.innerText = '0';
-			tile.style.color = 'rgba(0,0,0,0)';
+			makeInvis(tile);
 		}
 	}
+	GG = false;
+	sub.innerText = '​';
 }
 const resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', clearField);
 
 initTiles();
 if (!painting) plantMines(60);
+ 

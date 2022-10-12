@@ -71,7 +71,8 @@ header {
 	margin: auto;
 	/* background-color: #cbc0c0; */
 	cursor: default;
-	color: rgba(0,0,0,0)
+	color: rgb(0,0,0);
+	font-size: 0;
 }
 
 .tile:hover {
