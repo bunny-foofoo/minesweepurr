@@ -55,8 +55,8 @@ header {
 	align-content: center;
 	/* align-items: center; */
 	margin: auto;
-	width: 600px;
-	height: 600px;
+	width: calc(30px * 20);
+	height: calc(30px * 20);
 	overflow: auto;	
 	flex-wrap: wrap;
 	/* flex-direction: column; */
@@ -65,9 +65,9 @@ header {
 
 .tile {
 	/* border: 1px solid white; */
-	flex: 1 0 5%;
-	width: 30px;
-	height: 30px;
+	flex: 1 0 calc(100% / 20);
+	width: calc(100% / 20);
+	height: calc(100% / 20);
 	line-height: 30px;
 	display: block;
 	text-align: center;
