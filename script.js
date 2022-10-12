@@ -8,11 +8,13 @@ const NORMALCOLOR1 = '#dcd6d6';
 const NORMALCOLOR2 = '#cbc0c8';
 
 
-const HIDDENCOLOR1 = '#544c4c';
-const HIDDENCOLOR2 = '#3e3b3b';
+const HIDDENCOLOR1 = 'rgb(84, 76, 76)'; // #544c4c
+const HIDDENCOLOR2 = 'rgb(62, 59, 59)'; // #3e3b3b
 
 const MINEASCII = 'ϴ';
 const MINECOLOR = '#450000';
+
+const FLAGCOLOR = 'rgb(230, 146, 37)'; // #e69225
 
 const COLORS = [
 	'rgb(24, 137, 230)',
@@ -146,6 +148,9 @@ const clearNeighbors = tile => {
 				if (0 <= _x && _x < 20) {
 					neighby = document.querySelector(`#tile_${_y}_${_x}`);
 
+					// uncomment to disallow cascades from removing flags
+					// if (neighby.style.backgroundColor == FLAGCOLOR) continue;
+
 					let isHidden = neighby.style.fontSize == 0 || neighby.style.fontSize == '0' || neighby.style.fontSize == '0em';
 					let isZero = neighby.innerText == '0';
 					let isLocalTile = neighby == tile;
@@ -171,6 +176,8 @@ const clickEvent = e => {
 		const x = parseInt(splitId[2]);
 		return plant(x, y);
 	}
+
+	if (e.target.style.backgroundColor == FLAGCOLOR) return;
 	
 	if (e.target.innerText == MINEASCII) {
 		// clicked on a mine
@@ -199,6 +206,25 @@ const mouseout = e => {
 	e.target.style.zIndex = 1;
 }
 
+const rightclick = e => {
+	e.preventDefault();
+
+	let tile = e.target
+	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
+	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+
+	if (unrevealed) {
+		tile.style.backgroundColor = FLAGCOLOR;
+	} else if (isFlagged) {
+		const splitId = tile.id.split('_');
+		const y = parseInt(splitId[1]);
+		const x = parseInt(splitId[2]);
+		tile.style.backgroundColor = ((y + x) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
+	}
+ 
+	return false;
+}
+
 const initTiles = () => {
 	// fill minefield with tiles
 	for (let i = 0; i < HEIGHT; i++) {
@@ -212,6 +238,7 @@ const initTiles = () => {
 			tile.style.backgroundColor = ((i + j) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 			
 			tile.addEventListener('click', clickEvent);
+			tile.addEventListener('contextmenu', rightclick);
 			tile.addEventListener('mouseenter', mousein);
 			tile.addEventListener('mouseleave', mouseout);
 			minefield.appendChild(tile);
