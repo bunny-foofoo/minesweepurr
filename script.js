@@ -12,7 +12,7 @@ const HIDDENCOLOR1 = 'rgb(84, 76, 76)'; // #544c4c
 const HIDDENCOLOR2 = 'rgb(62, 59, 59)'; // #3e3b3b
 
 const MINEASCII = 'ϴ';
-const MINECOLOR = '#450000';
+const MINECOLOR = 'rgb(194, 50, 62)'; // #450000 orig // rgb(94, 50, 237) poipol
 
 const FLAGCOLOR = 'rgb(230, 146, 37)'; // #e69225
 
