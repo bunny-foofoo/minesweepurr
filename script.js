@@ -141,5 +141,17 @@ const initTiles = () => {
 	}
 }
 
+const clearField = () => {
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			const tile = document.querySelector(`#tile_${i}_${j}`);
+			tile.innerText = '0';
+			tile.style.color = 'rgba(0,0,0,0)';
+		}
+	}
+}
+const resetButton = document.querySelector('.reset');
+resetButton.addEventListener('click', clearField);
+
 initTiles();
 if (!painting) plantMines(60);
