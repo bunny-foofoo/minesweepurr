@@ -4,6 +4,7 @@
  * ~~fix neighbor counts~~
  * ~~reset button~~ turn `reset` button into `clear` (clears field) and `reset` (clears field & generates new mines)
  * that thing where you press both left and right click and stuff happens
+ * optimize code (lots of reused code throughout, unneeded variables, etc)
 
 # Extra functionality:
  * minefield size settings
