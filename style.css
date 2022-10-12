@@ -73,6 +73,7 @@ header {
 	cursor: default;
 	color: rgb(0,0,0);
 	font-size: 0;
+	transition-duration: 0.33s;
 }
 
 /*
