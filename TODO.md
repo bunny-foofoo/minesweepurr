@@ -1,8 +1,8 @@
 # Core functionality
  * ~~cascading (reveal adjacent 0 tiles and their neighbors)~~
- * flags
+ * ~~flags~~
  * ~~fix neighbor counts~~
- * ~~reset button~~ turn `reset` button into `clear` (clears field) and `reset` (clears field & generates new mines)
+ * ~~reset button~~ ~~turn `reset` button into `clear` (clears field) and `reset` (clears field & generates new mines)~~
  * that thing where you press both left and right click and stuff happens
  * optimize code (lots of reused code throughout, unneeded variables, etc)
 
@@ -27,8 +27,8 @@
  * tile reveal effects
  * game over effects
  * **proper minefield scaling**
- * better tile text (it's ugly and too high)
- * better tile text colors (also fix the bug with them)
+ * better tile text (it's ugly ~~and too high~~)
+ * better tile text colors (also fix the bug with them where sometimes a color is not found)
  * cute minefield border
  * less unappealing page design
  * fix gross tile hover transition (especially the z-index)
