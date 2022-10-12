@@ -169,6 +169,17 @@ const clearNeighbors = tile => {
 	}
 }
 
+const revealAllMines = () => {
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			const tile = document.querySelector(`#tile_${i}_${j}`);
+			if (tile.innerText == MINEASCII) {
+				makeVis(tile);
+			}
+		}
+	}
+}
+
 const clickEvent = e => {
 	if (GG) return;
 
@@ -185,7 +196,7 @@ const clickEvent = e => {
 		// clicked on a mine
 		GG = true;
 		sub.innerText = 'you died';
-		makeVis(e.target);
+		revealAllMines();
 		//e.target.style.color = 'rgb(255, 75, 75)';
 	} else {
 		if (e.target.innerText != '0') {
