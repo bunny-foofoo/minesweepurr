@@ -236,8 +236,14 @@ const togglePainting = e => {
 	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
 
+const clearButton = document.querySelector('.clear');
+clearButton.addEventListener('click', clearField);
+
 const resetButton = document.querySelector('.reset');
-resetButton.addEventListener('click', clearField);
+resetButton.addEventListener('click', () => {
+	clearField();
+	plantMines();
+});
 
 const generateButton = document.querySelector('.generate');
 generateButton.addEventListener('click', plantMines);
