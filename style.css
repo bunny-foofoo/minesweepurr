@@ -45,6 +45,7 @@ header {
 	font-family: 'Jua';
 	color: azure;
 	cursor: default;
+	transition-duration: 0.8s;
 }
 
 .minefield {
