@@ -101,6 +101,7 @@ header {
 	justify-content: center;
 	transform: translate(0, -350%);
 	padding: 5px;
+	z-index: 3;
 }
 
 button {
