@@ -26,7 +26,7 @@ const COLORS = [
 ]
 
 let GG = false;
-const PLANTSPEED = 75;
+const PLANTSPEED = 0;
 const NUMMINES = 50;
 
 let painting = false;
@@ -125,7 +125,7 @@ const plantMines = async () => {
 		let ry = Math.floor(Math.random() * HEIGHT);
 		let planted = plant(rx, ry);
 		if (planted) {
-			await new Promise(r => setTimeout(r, PLANTSPEED));
+			if (PLANTSPEED != 0) await new Promise(r => setTimeout(r, PLANTSPEED));
 		} else {
 			m--;
 		}
