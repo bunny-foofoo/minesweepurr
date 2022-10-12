@@ -31,6 +31,8 @@ let GG = false;
 const PLANTSPEED = 0;
 const NUMMINES = 50;
 
+let currentMines = 0;
+
 let painting = false;
 
 const makeVis = tile => {
@@ -118,6 +120,7 @@ const plant = (x, y) => {
 		tile.style.color = 'rgba(0,0,0,0)';
 		//tile.style.backgroundColor = MINECOLOR;
 		incrementNeighbors(x, y);
+		currentMines++;
 		return true;
 	}
 	return false;
@@ -125,6 +128,7 @@ const plant = (x, y) => {
 
 const plantMines = async () => {
 	for (let m = 0; m < NUMMINES; m++) {
+		if (currentMines == HEIGHT * WIDTH) return;
 		let rx = Math.floor(Math.random() * WIDTH);
 		let ry = Math.floor(Math.random() * HEIGHT);
 		let planted = plant(rx, ry);
@@ -266,6 +270,7 @@ const clearField = () => {
 			makeInvis(tile);
 		}
 	}
+	currentMines = 0;
 	GG = false;
 	sub.innerText = '​';
 }
