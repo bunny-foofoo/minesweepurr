@@ -162,8 +162,12 @@ const clearField = () => {
 	GG = false;
 	sub.innerText = '​';
 }
+
 const resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', clearField);
+
+const generateButton = document.querySelector('.generate');
+generateButton.addEventListener('click', plantMines(60))
 
 initTiles();
 if (!painting) plantMines(60);
