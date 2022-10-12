@@ -65,6 +65,7 @@ header {
 
 .tile {
 	/* border: 1px solid white; */
+	flex: 1 0 5%;
 	width: 30px;
 	height: 30px;
 	line-height: 30px;
