@@ -75,7 +75,7 @@ header {
 	cursor: default;
 	color: rgb(0,0,0);
 	font-size: 0;
-	transition: background-color 0.33s, font-size 0.33s;
+	transition: background-color 0.33s, font-size 0.1s;
 }
 
 /*
