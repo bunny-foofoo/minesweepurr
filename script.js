@@ -155,11 +155,10 @@ const clearNeighbors = tile => {
 
 					let isHidden = neighby.style.fontSize == 0 || neighby.style.fontSize == '0' || neighby.style.fontSize == '0em';
 					let isZero = neighby.innerText == '0';
-					let isLocalTile = neighby == tile;
 
 					makeVis(neighby);
 
-					if (isHidden && isZero && !isLocalTile) {
+					if (isHidden && isZero) {
 						neighby.style.color = 'rgba(0,0,0,0)';
 						clearNeighbors(neighby);
 					}
