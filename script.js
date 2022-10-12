@@ -101,6 +101,8 @@ const incrementNeighbors = (x, y) => {
 						neighby.innerText = nval + 1;
 						neighby.style.color = COLORS[nval];
 					}
+					// this adds an interesting behavior where pressing `reset` while painting
+					// will cause a new minefield to generate with all tiles (except 0) revealed
 					if (painting) makeVis(neighby);
 				}
 			}
