@@ -22,6 +22,7 @@ const COLORS = [
 
 let GG = false;
 const PLANTSPEED = 75;
+const NUMMINES = 60;
 
 let painting = true;
 
@@ -99,8 +100,8 @@ const plant = (x, y) => {
 	return false;
 }
 
-const plantMines = async numMines => {
-	for (let m = 0; m < numMines; m++) {
+const plantMines = async () => {
+	for (let m = 0; m < NUMMINES; m++) {
 		let rx = Math.floor(Math.random() * WIDTH);
 		let ry = Math.floor(Math.random() * HEIGHT);
 		let planted = plant(rx, ry);
@@ -167,8 +168,8 @@ const resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', clearField);
 
 const generateButton = document.querySelector('.generate');
-generateButton.addEventListener('click', plantMines(60))
+generateButton.addEventListener('click', plantMines)
 
 initTiles();
-if (!painting) plantMines(60);
+if (!painting) plantMines();
  
