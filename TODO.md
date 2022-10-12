@@ -30,3 +30,4 @@
  * better tile text colors (also fix the bug with them)
  * cute minefield border
  * less unappealing page design
+ * fix gross tile hover transition (especially the z-index)
