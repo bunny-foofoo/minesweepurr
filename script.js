@@ -12,6 +12,7 @@ const HIDDENCOLOR1 = '#544c4c';
 const HIDDENCOLOR2 = '#3e3b3b';
 
 const MINEASCII = 'ϴ';
+const MINECOLOR = '#450000';
 
 const COLORS = [
 	'rgb(24, 137, 230)',
@@ -35,7 +36,11 @@ const makeVis = tile => {
 	const splitId = tile.id.split('_');
 	const y = parseInt(splitId[1]);
 	const x = parseInt(splitId[2]);
-	tile.style.backgroundColor = ((x + y) % 2 == 0) ? NORMALCOLOR1 : NORMALCOLOR2; 
+	if (tile.innerText == MINEASCII) {
+		tile.style.backgroundColor = MINECOLOR;
+	} else {
+		tile.style.backgroundColor = ((x + y) % 2 == 0) ? NORMALCOLOR1 : NORMALCOLOR2;
+	}
 }
 
 const makeInvis = tile => {
@@ -105,7 +110,9 @@ const plant = (x, y) => {
 	const tile = document.querySelector(`#tile_${y}_${x}`);
 	if (tile.innerText != MINEASCII) {
 		tile.innerText = MINEASCII;
-		tile.style.color = 'rgb(0, 0, 0)'
+		// tile.style.color = 'rgb(0, 0, 0)'
+		tile.style.color = 'rgba(0,0,0,0)';
+		//tile.style.backgroundColor = MINECOLOR;
 		incrementNeighbors(x, y);
 		return true;
 	}
@@ -169,7 +176,8 @@ const clickEvent = e => {
 		// clicked on a mine
 		GG = true;
 		sub.innerText = 'you died';
-		e.target.style.color = 'rgb(255, 75, 75)';
+		makeVis(e.target);
+		//e.target.style.color = 'rgb(255, 75, 75)';
 	} else {
 		if (e.target.innerText != '0') {
 			e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
