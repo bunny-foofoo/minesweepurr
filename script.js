@@ -4,8 +4,12 @@ const WIDTH = 20;
 const minefield = document.querySelector('.minefield');
 const sub = document.querySelector('.sub')
 
-const COLOR1 = '#dcd6d6';
-const COLOR2 = '#cbc0c8';
+const NORMALCOLOR1 = '#dcd6d6';
+const NORMALCOLOR2 = '#cbc0c8';
+
+
+const HIDDENCOLOR1 = '#544c4c';
+const HIDDENCOLOR2 = '#3e3b3b';
 
 const MINEASCII = 'ϴ';
 
@@ -28,14 +32,22 @@ let painting = false;
 
 const makeVis = tile => {
 	tile.style.fontSize = '1em';
+	const splitId = tile.id.split('_');
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
+	tile.style.backgroundColor = ((x + y) % 2 == 0) ? NORMALCOLOR1 : NORMALCOLOR2; 
 }
 
 const makeInvis = tile => {
 	tile.style.fontSize = '0em';
+	const splitId = tile.id.split('_');
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
+	tile.style.backgroundColor = ((x + y) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 }
 
 const countNeighbors = tile => {
-	const splitId = tile.id.split('_')
+	const splitId = tile.id.split('_');
 	const y = parseInt(splitId[1]);
 	const x = parseInt(splitId[2]);
 
@@ -114,7 +126,7 @@ const plantMines = async () => {
 }
 
 const clearNeighbors = tile => {
-	const splitId = tile.id.split('_')
+	const splitId = tile.id.split('_');
 	const y = parseInt(splitId[1]);
 	const x = parseInt(splitId[2]);
 	for (let i = 0; i < 3; i++) {
@@ -134,6 +146,7 @@ const clearNeighbors = tile => {
 					makeVis(neighby);
 
 					if (isHidden && isZero && !isLocalTile) {
+						neighby.style.color = 'rgba(0,0,0,0)';
 						clearNeighbors(neighby);
 					}
 				}
@@ -146,7 +159,7 @@ const clickEvent = e => {
 	if (GG) return;
 
 	if (painting) {
-		const splitId = e.target.id.split('_')
+		const splitId = e.target.id.split('_');
 		const y = parseInt(splitId[1]);
 		const x = parseInt(splitId[2]);
 		return plant(x, y);
@@ -177,7 +190,7 @@ const initTiles = () => {
 			tile.innerText = '0';
 
 			// checkerboard color
-			tile.style.backgroundColor = ((i + j) % 2 == 0) ? COLOR1 : COLOR2; 
+			tile.style.backgroundColor = ((i + j) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 			
 			tile.addEventListener('click', clickEvent);
 			minefield.appendChild(tile);
