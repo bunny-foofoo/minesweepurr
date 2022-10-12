@@ -80,8 +80,13 @@ header {
 	z-index: 2;
 }
 
-.game {
-	/* outline: 2px solid green; */
+/* https://stackoverflow.com/a/4358620 */
+.game, .title {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .controls {
