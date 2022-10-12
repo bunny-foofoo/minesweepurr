@@ -210,11 +210,20 @@ const clearField = () => {
 	sub.innerText = '​';
 }
 
+const togglePainting = e => {
+	painting = !painting;
+	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
+}
+
 const resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', clearField);
 
 const generateButton = document.querySelector('.generate');
-generateButton.addEventListener('click', plantMines)
+generateButton.addEventListener('click', plantMines);
+
+const paintButton = document.querySelector('.paint');
+paintButton.addEventListener('click', togglePainting);
+
 
 initTiles();
 if (!painting) plantMines();
