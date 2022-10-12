@@ -30,7 +30,7 @@ header {
 	font-size: 7em;
 	font-family: 'Jua';
 	color:azure;
-	transform: translate(0, 100%);
+	transform: translate(0, 60%);
 	cursor: default;
 	text-shadow: 1px 2px 1px rgb(25, 24, 24);
 }
@@ -77,4 +77,36 @@ header {
 .tile:hover {
 	outline: 1px solid grey;
 	z-index: 2;
+}
+
+.game {
+	/* outline: 2px solid green; */
+}
+
+.controls {
+	/* outline: 2px solid red; */
+	width: 800px;
+	height: 50px;
+	display: flex;
+	margin: auto;
+	justify-content: center;
+	transform: translate(0, -350%);
+}
+
+button {
+	border: 0;
+	width: 100px;
+	font-family: 'Jua';
+	font-size: 1.5em;
+	color: white;
+	background-color: rgb(179, 103, 144);
+	border-radius: 15px;
+	transition-duration: 0.4s;
+	text-shadow: 1px 2px 1px rgba(25, 24, 24, 0.1);
+}
+
+button:hover {
+	background-color: rgb(155, 84, 122); /* Green */
+	color: white;
+	cursor: pointer;
 }
