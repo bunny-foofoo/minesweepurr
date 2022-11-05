@@ -37,6 +37,28 @@ let freshStart = true;
 
 let painting = false;
 
+const loopNeighbors = (tile, func) => {
+	const splitId = tile.id.split('_');
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
+	for (let i = 0; i < 3; i++) {
+		// ensure we're not going to access a negative or out of range index
+		let _y = y + (i - 1);
+		if (0 <= _y && _y < HEIGHT) {
+			for (let j = 0; j < 3; j++) {
+				// ensure we're not going to access a negative or out of range index
+				let _x = x + (j - 1);
+				if (0 <= _x && _x < WIDTH) {
+
+					let idStr = `#tile_${_y}_${_x}`;
+					neighby = document.querySelector(idStr);
+					func(neighby);
+				}
+			}
+		}
+	}
+}
+
 const makeVis = tile => {
 	tile.style.fontSize = '1em';
 	const splitId = tile.id.split('_');
