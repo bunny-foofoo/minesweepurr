@@ -37,10 +37,13 @@ let freshStart = true;
 
 let painting = false;
 
-const loopNeighbors = (tile, func) => {
+const getXY = tile => {
 	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
+	return [ parseInt(splitId[2]), parseInt(splitId[1]) ]
+}
+
+const loopNeighbors = (tile, func) => {
+	let [ x, y ] = getXY(tile);
 	for (let i = 0; i < 3; i++) {
 		// ensure we're not going to access a negative or out of range index
 		let _y = y + (i - 1);
@@ -49,7 +52,6 @@ const loopNeighbors = (tile, func) => {
 				// ensure we're not going to access a negative or out of range index
 				let _x = x + (j - 1);
 				if (0 <= _x && _x < WIDTH) {
-
 					let idStr = `#tile_${_y}_${_x}`;
 					neighby = document.querySelector(idStr);
 					func(neighby);
@@ -61,9 +63,7 @@ const loopNeighbors = (tile, func) => {
 
 const makeVis = tile => {
 	tile.style.fontSize = '1em';
-	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
+	let [ x, y ] = getXY(tile);
 	if (tile.innerText == MINEASCII) {
 		tile.style.backgroundColor = MINECOLOR;
 	} else {
@@ -73,67 +73,31 @@ const makeVis = tile => {
 
 const makeInvis = tile => {
 	tile.style.fontSize = '0em';
-	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
+	let [ x, y ] = getXY(tile);
 	tile.style.backgroundColor = ((x + y) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 }
 
 const countNeighbors = tile => {
-	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
-
-	// num mines nearby
 	let dangerCount = 0;
-
-	for (let i = 0; i < 3; i++) {
-		// ensure we're not going to access a negative or out of range index
-		let _y = y + (i - 1);
-		if (0 <= _y && _y < 20) {
-
-			for (let j = 0; j < 3; j++) {
-				// ensure we're not going to access a negative or out of range index
-				let _x = x + (j - 1);
-				if (0 <= _x && _x < 20) {
-
-					let idStr = `#tile_${_y}_${_x}`;
-					neighby = document.querySelector(idStr);
-					if (neighby.innerText == 'x') {
-						dangerCount++;
-					}
-
-				}
-			}
+	loopNeighbors(tile, (neighbor => {
+		if (neighbor.innerText == 'x') {
+			dangerCount++;
 		}
-	}
-	
+	}));
 	return dangerCount;
 }
 
-const incrementNeighbors = (x, y) => {
-	for (let i = 0; i < 3; i++) {
-		// ensure we're not going to access a negative or out of range index
-		let _y = y + (i - 1);
-		if (0 <= _y && _y < 20) {
-			for (let j = 0; j < 3; j++) {
-				// ensure we're not going to access a negative or out of range index
-				let _x = x + (j - 1);
-				if (0 <= _x && _x < 20) {
-					let idStr = `#tile_${_y}_${_x}`;
-					neighby = document.querySelector(idStr);
-					if (neighby.innerText != MINEASCII) {
-						let nval = parseInt(neighby.innerText)
-						neighby.innerText = nval + 1;
-						neighby.style.color = COLORS[nval];
-					}
-					// this adds an interesting behavior where pressing `reset` while painting
-					// will cause a new minefield to generate with all tiles (except 0) revealed
-					if (painting) makeVis(neighby);
-				}
-			}
+const incrementNeighbors = tile => {
+	loopNeighbors(tile, (neighbor => {
+		if (neighbor.innerText != MINEASCII) {
+			let nval = parseInt(neighbor.innerText)
+			neighbor.innerText = nval + 1;
+			neighbor.style.color = COLORS[nval];
 		}
-	}
+		// this adds an interesting behavior where pressing `reset` while painting
+		// will cause a new minefield to generate with all tiles (except 0) revealed
+		if (painting) makeVis(neighbor);
+	}));
 }
 
 const plant = (x, y) => {
@@ -143,7 +107,7 @@ const plant = (x, y) => {
 		// tile.style.color = 'rgb(0, 0, 0)'
 		tile.style.color = 'rgba(0,0,0,0)';
 		//tile.style.backgroundColor = MINECOLOR;
-		incrementNeighbors(x, y);
+		incrementNeighbors(tile);
 		currentMines++;
 		return true;
 	}
@@ -165,35 +129,20 @@ const plantMines = async () => {
 }
 
 const clearNeighbors = tile => {
-	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
-	for (let i = 0; i < 3; i++) {
-		// ensure we're not going to access a negative or out of range index
-		let _y = y + (i - 1);
-		if (0 <= _y && _y < 20) {
-			for (let j = 0; j < 3; j++) {
-				// ensure we're not going to access a negative or out of range index
-				let _x = x + (j - 1);
-				if (0 <= _x && _x < 20) {
-					neighby = document.querySelector(`#tile_${_y}_${_x}`);
+	loopNeighbors(tile, (neighbor => {
+		// uncomment to disallow cascades from removing flags
+		// if (neighbor.style.backgroundColor == FLAGCOLOR) continue;
 
-					// uncomment to disallow cascades from removing flags
-					// if (neighby.style.backgroundColor == FLAGCOLOR) continue;
+		let isHidden = neighbor.style.fontSize == 0 || neighbor.style.fontSize == '0' || neighbor.style.fontSize == '0em';
+		let isZero = neighbor.innerText == '0';
 
-					let isHidden = neighby.style.fontSize == 0 || neighby.style.fontSize == '0' || neighby.style.fontSize == '0em';
-					let isZero = neighby.innerText == '0';
+		makeVis(neighbor);
 
-					makeVis(neighby);
-
-					if (isHidden && isZero) {
-						neighby.style.color = 'rgba(0,0,0,0)';
-						clearNeighbors(neighby);
-					}
-				}
-			}
+		if (isHidden && isZero) {
+			neighbor.style.color = 'rgba(0,0,0,0)';
+			clearNeighbors(neighbor);
 		}
-	}
+	}));
 }
 
 const revealAllMines = () => {
@@ -219,10 +168,7 @@ const clickEvent = e => {
 	}
 
 	if (painting) {
-		const splitId = e.target.id.split('_');
-		const y = parseInt(splitId[1]);
-		const x = parseInt(splitId[2]);
-		return plant(x, y);
+		return plant(getXY(tile));
 	}
 
 	if (e.target.style.backgroundColor == FLAGCOLOR) return;
@@ -264,10 +210,7 @@ const rightclick = e => {
 	if (unrevealed) {
 		tile.style.backgroundColor = FLAGCOLOR;
 	} else if (isFlagged) {
-		const splitId = tile.id.split('_');
-		const y = parseInt(splitId[1]);
-		const x = parseInt(splitId[2]);
-		tile.style.backgroundColor = ((y + x) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
+		makeInvis(tile);
 	}
  
 	return false;
@@ -282,38 +225,20 @@ const middleclick = e => {
 	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
 	if (unrevealed || isFlagged) return;
 
-	const splitId = tile.id.split('_');
-	const y = parseInt(splitId[1]);
-	const x = parseInt(splitId[2]);
-
 	// number of neighboring flags
 	let tileVal = parseInt(tile.innerText)
 	let flagCount = 0;
 	let neighbors = [];
 
-	for (let i = 0; i < 3; i++) {
-		// ensure we're not going to access a negative or out of range index
-		let _y = y + (i - 1);
-		if (0 <= _y && _y < 20) {
-			for (let j = 0; j < 3; j++) {
-				// ensure we're not going to access a negative or out of range index
-				let _x = x + (j - 1);
-				if (0 <= _x && _x < 20) {
-
-					let idStr = `#tile_${_y}_${_x}`;
-					neighby = document.querySelector(idStr);
-
-					if (neighby.style.backgroundColor == FLAGCOLOR) {
-						flagCount++;
-					} else {
-						neighbors.push(neighby);
-					}
-
-					if (flagCount > tileVal) return;
-				}
-			}
+	loopNeighbors(tile, (neighbor => {
+		if (neighbor.style.backgroundColor == FLAGCOLOR) {
+			flagCount++;
+		} else {
+			neighbors.push(neighbor);
 		}
-	}
+
+		if (flagCount > tileVal) return;
+	}))
 	
 	if (flagCount != tileVal) return;
 
