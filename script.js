@@ -33,6 +33,8 @@ const NUMMINES = 50;
 
 let currentMines = 0;
 
+let freshStart = true;
+
 let painting = false;
 
 const makeVis = tile => {
@@ -185,6 +187,14 @@ const revealAllMines = () => {
 
 const clickEvent = e => {
 	if (GG) return;
+
+	if (freshStart) {
+		while (e.target.innerText != 0) {
+			clearField();
+			plantMines();
+		}
+		freshStart = false;
+	}
 
 	if (painting) {
 		const splitId = e.target.id.split('_');
@@ -339,6 +349,7 @@ const clearField = () => {
 }
 
 const togglePainting = e => {
+	freshStart = false;
 	painting = !painting;
 	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
@@ -348,6 +359,7 @@ clearButton.addEventListener('click', clearField);
 
 const resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', () => {
+	freshStart = true;
 	clearField();
 	plantMines();
 });
