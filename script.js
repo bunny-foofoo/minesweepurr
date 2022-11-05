@@ -241,6 +241,68 @@ const rightclick = e => {
 	return false;
 }
 
+const middleclick = e => {
+	if (e.button != 1) return;
+
+	let tile = e.target
+
+	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
+	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+	if (unrevealed || isFlagged) return;
+
+	const splitId = tile.id.split('_');
+	const y = parseInt(splitId[1]);
+	const x = parseInt(splitId[2]);
+
+	// number of neighboring flags
+	let tileVal = parseInt(tile.innerText)
+	let flagCount = 0;
+	let neighbors = [];
+
+	for (let i = 0; i < 3; i++) {
+		// ensure we're not going to access a negative or out of range index
+		let _y = y + (i - 1);
+		if (0 <= _y && _y < 20) {
+			for (let j = 0; j < 3; j++) {
+				// ensure we're not going to access a negative or out of range index
+				let _x = x + (j - 1);
+				if (0 <= _x && _x < 20) {
+
+					let idStr = `#tile_${_y}_${_x}`;
+					neighby = document.querySelector(idStr);
+
+					if (neighby.style.backgroundColor == FLAGCOLOR) {
+						flagCount++;
+					} else {
+						neighbors.push(neighby);
+					}
+
+					if (flagCount > tileVal) return;
+				}
+			}
+		}
+	}
+	
+	if (flagCount != tileVal) return;
+
+	neighbors.forEach(neighby => {
+		if (neighby.innerText == MINEASCII) {
+			// clicked on a mine
+			GG = true;
+			sub.innerText = 'you died';
+			revealAllMines();
+			//neighby.style.color = 'rgb(255, 75, 75)';
+		} else {
+			if (neighby.innerText != '0') {
+				neighby.style.color = COLORS[parseInt(neighby.innerText) - 1];
+				makeVis(neighby);
+			} else {
+				clearNeighbors(neighby);
+			}
+		}
+	});
+}
+
 const initTiles = () => {
 	// fill minefield with tiles
 	for (let i = 0; i < HEIGHT; i++) {
@@ -257,6 +319,7 @@ const initTiles = () => {
 			tile.addEventListener('contextmenu', rightclick);
 			tile.addEventListener('mouseenter', mousein);
 			tile.addEventListener('mouseleave', mouseout);
+			tile.addEventListener('auxclick', middleclick);
 			minefield.appendChild(tile);
 		}
 	}
