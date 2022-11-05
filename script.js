@@ -170,7 +170,8 @@ const clickEvent = e => {
 	}
 
 	if (painting) {
-		return plant(getXY(tile));
+		let [ x, y ] = getXY(e.target)
+		return plant(x, y);
 	}
 
 	if (e.target.style.backgroundColor == FLAGCOLOR) return;
@@ -303,6 +304,14 @@ const clearField = () => {
 const togglePainting = e => {
 	freshStart = false;
 	painting = !painting;
+	if (!painting) {
+		for (let i = 0; i < HEIGHT; i++) {
+			for (let j = 0; j < WIDTH; j++) {
+				const tile = document.querySelector(`#tile_${i}_${j}`);
+				makeInvis(tile);
+			}
+		}
+	}
 	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
 
@@ -352,10 +361,16 @@ const revealOnce = () => {
 }
 
 const autoSolve = async () => {
-	let flags = 1;
-	while (flags != 0) {
+	let flags;
+	let failedAttempts = 0;
+	while (failedAttempts < 2) {
 		revealOnce();
 		flags = solveOnce();
+		if (flags == 0) {
+			failedAttempts++;
+		} else {
+			failedAttempts = 0;
+		}
 		if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
 	}
 }
