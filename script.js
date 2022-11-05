@@ -354,8 +354,8 @@ const revealOnce = () => {
 const autoSolve = async () => {
 	let flags = 1;
 	while (flags != 0) {
-		flags = solveOnce();
 		revealOnce();
+		flags = solveOnce();
 		if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
 	}
 }
