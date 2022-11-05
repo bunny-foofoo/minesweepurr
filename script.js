@@ -37,6 +37,8 @@ let freshStart = true;
 
 let painting = false;
 
+const SOLVESPEED = 250;
+
 const getXY = tile => {
 	const splitId = tile.id.split('_');
 	return [ parseInt(splitId[2]), parseInt(splitId[1]) ]
@@ -216,11 +218,7 @@ const rightclick = e => {
 	return false;
 }
 
-const middleclick = e => {
-	if (e.button != 1) return;
-
-	let tile = e.target
-
+const middleReveal = tile => {
 	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
 	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
 	if (unrevealed || isFlagged) return;
@@ -258,6 +256,13 @@ const middleclick = e => {
 			}
 		}
 	});
+}
+
+const middleclick = e => {
+	if (e.button != 1) return;
+
+	let tile = e.target
+	middleReveal(tile);
 }
 
 const initTiles = () => {
@@ -301,6 +306,60 @@ const togglePainting = e => {
 	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
 
+const solveOnce = () => {
+	let newFlags = 0;
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			const tile = document.querySelector(`#tile_${i}_${j}`);
+			
+			let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
+			let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+			if (unrevealed || isFlagged) continue;
+
+			let hiddenNeighbors = 0;
+			let flaggedNeighbors = 0;
+
+			let tileVal = parseInt(tile.innerText)
+
+			loopNeighbors(tile, (neighbor => {
+				let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
+				let isFlagged = neighbor.style.backgroundColor == FLAGCOLOR;
+				if (unrevealed) hiddenNeighbors++;
+				if (isFlagged) flaggedNeighbors++;
+			}))
+
+			if (tileVal == (hiddenNeighbors + flaggedNeighbors)) {
+				loopNeighbors(tile, (neighbor => {
+					let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
+					if (unrevealed) {
+						neighbor.style.backgroundColor = FLAGCOLOR;
+						newFlags++;
+					};
+				}))
+			}
+		}
+	}
+	return newFlags;
+}
+
+const revealOnce = () => {
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			const tile = document.querySelector(`#tile_${i}_${j}`);
+			middleReveal(tile);
+		}
+	}
+}
+
+const autoSolve = async () => {
+	let flags = 1;
+	while (flags != 0) {
+		flags = solveOnce();
+		revealOnce();
+		if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
+	}
+}
+
 const clearButton = document.querySelector('.clear');
 clearButton.addEventListener('click', clearField);
 
@@ -317,6 +376,14 @@ generateButton.addEventListener('click', plantMines);
 const paintButton = document.querySelector('.paint');
 paintButton.addEventListener('click', togglePainting);
 
+const solveButton = document.querySelector('.solve');
+solveButton.addEventListener('click', solveOnce);
+
+const revealButton = document.querySelector('.reveal');
+revealButton.addEventListener('click', revealOnce);
+
+const autoSolveButton = document.querySelector('.autosolve');
+autoSolveButton.addEventListener('click', autoSolve);
 
 initTiles();
 if (!painting) plantMines();
