@@ -5,7 +5,8 @@
  * ~~reset button~~ ~~turn `reset` button into `clear` (clears field) and `reset` (clears field & generates new mines)~~
  * that thing where you press both left and right click and stuff happens
  * **optimize code (lots of reused code throughout, unneeded variables, etc)**
- * redesign RNG to be more pseudo. the initial start of the game feels needlessly rough, so it'd be nice to always start on a 0.
+ * ~~redesign RNG to be more pseudo. the initial start of the game feels needlessly rough, so it'd be nice to always start on a 0.~~
+ * make the always-0-start code more efficient
 
 # Extra functionality
  * minefield size settings
