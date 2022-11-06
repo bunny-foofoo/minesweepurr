@@ -66,7 +66,7 @@ const loopNeighbors = (tile, func) => {
 	}
 }
 
-const makeVis = tile => {
+const makeVisible = tile => {
 	tile.style.fontSize = '1em';
 	let [ x, y ] = getXY(tile);
 	if (tile.innerText == MINEASCII) {
@@ -76,10 +76,23 @@ const makeVis = tile => {
 	}
 }
 
-const makeInvis = tile => {
+const makeHidden = tile => {
 	tile.style.fontSize = '0em';
 	let [ x, y ] = getXY(tile);
 	tile.style.backgroundColor = ((x + y) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
+}
+
+const isHidden = tile => {
+	return tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;;
+}
+
+const setFlag = tile => {
+	let [ x, y ] = getXY(tile)
+	tile.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
+}
+
+const isFlagged = tile => {
+	return tile.style.backgroundColor == FLAGCOLOR1 || tile.style.backgroundColor == FLAGCOLOR2;
 }
 
 const countNeighbors = tile => {
@@ -101,7 +114,7 @@ const incrementNeighbors = tile => {
 		}
 		// this adds an interesting behavior where pressing `reset` while painting
 		// will cause a new minefield to generate with all tiles (except 0) revealed
-		if (painting) makeVis(neighbor);
+		if (painting) makeVisible(neighbor);
 	}));
 }
 
@@ -138,12 +151,12 @@ const clearNeighbors = tile => {
 		// uncomment to disallow cascades from removing flags
 		// if (neighbor.style.backgroundColor == FLAGCOLOR) continue;
 
-		let isHidden = neighbor.style.fontSize == 0 || neighbor.style.fontSize == '0' || neighbor.style.fontSize == '0em';
-		let isZero = neighbor.innerText == '0';
+		let wasHidden = isHidden(neighbor);
+		let wasZero = neighbor.innerText == '0';
 
-		makeVis(neighbor);
+		makeVisible(neighbor);
 
-		if (isHidden && isZero) {
+		if (wasHidden && wasZero) {
 			neighbor.style.color = 'rgba(0,0,0,0)';
 			clearNeighbors(neighbor);
 		}
@@ -155,7 +168,7 @@ const revealAllMines = () => {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			if (tile.innerText == MINEASCII) {
-				makeVis(tile);
+				makeVisible(tile);
 			}
 		}
 	}
@@ -177,7 +190,7 @@ const clickEvent = e => {
 		return plant(x, y);
 	}
 
-	if (e.target.style.backgroundColor == FLAGCOLOR1 || e.target.style.backgroundColor == FLAGCOLOR2) return;
+	if (isFlagged(e.target)) return;
 	
 	if (e.target.innerText == MINEASCII) {
 		// clicked on a mine
@@ -188,7 +201,7 @@ const clickEvent = e => {
 	} else {
 		if (e.target.innerText != '0') {
 			e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
-			makeVis(e.target);
+			makeVisible(e.target);
 		} else {
 			clearNeighbors(e.target);
 		}
@@ -210,23 +223,18 @@ const rightclick = e => {
 	e.preventDefault();
 
 	let tile = e.target
-	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-	let isFlagged = e.target.style.backgroundColor == FLAGCOLOR1 || e.target.style.backgroundColor == FLAGCOLOR2;
 
-	if (unrevealed) {
-		let [ x, y ] = getXY(tile)
-		tile.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
-	} else if (isFlagged) {
-		makeInvis(tile);
+	if (isHidden(tile)) {
+		setFlag(tile);
+	} else if (isFlagged(tile)) {
+		makeHidden(tile);
 	}
  
 	return false;
 }
 
 const middleReveal = tile => {
-	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-	let isFlagged = tile.style.backgroundColor == FLAGCOLOR1 || tile.style.backgroundColor == FLAGCOLOR2;
-	if (unrevealed || isFlagged) return;
+	if (isHidden(tile) || isFlagged(tile)) return;
 
 	// number of neighboring flags
 	let tileVal = parseInt(tile.innerText)
@@ -234,7 +242,7 @@ const middleReveal = tile => {
 	let neighbors = [];
 
 	loopNeighbors(tile, (neighbor => {
-		if (neighbor.style.backgroundColor == FLAGCOLOR1 || neighbor.style.backgroundColor == FLAGCOLOR2) {
+		if (isFlagged(neighbor)) {
 			flagCount++;
 		} else {
 			neighbors.push(neighbor);
@@ -255,7 +263,7 @@ const middleReveal = tile => {
 		} else {
 			if (neighby.innerText != '0') {
 				neighby.style.color = COLORS[parseInt(neighby.innerText) - 1];
-				makeVis(neighby);
+				makeVisible(neighby);
 			} else {
 				clearNeighbors(neighby);
 			}
@@ -280,7 +288,7 @@ const initTiles = () => {
 			tile.innerText = '0';
 
 			// checkerboard color
-			tile.style.backgroundColor = ((i + j) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
+			makeHidden(tile);
 			
 			tile.addEventListener('click', clickEvent);
 			tile.addEventListener('contextmenu', rightclick);
@@ -297,7 +305,7 @@ const clearField = () => {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			tile.innerText = '0';
-			makeInvis(tile);
+			makeHidden(tile);
 		}
 	}
 	currentMines = 0;
@@ -312,7 +320,7 @@ const togglePainting = e => {
 		for (let i = 0; i < HEIGHT; i++) {
 			for (let j = 0; j < WIDTH; j++) {
 				const tile = document.querySelector(`#tile_${i}_${j}`);
-				makeInvis(tile);
+				makeHidden(tile);
 			}
 		}
 	}
@@ -325,9 +333,7 @@ const solveOnce = () => {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			
-			let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-			let isFlagged = tile.style.backgroundColor == FLAGCOLOR1 || tile.style.backgroundColor == FLAGCOLOR2;
-			if (unrevealed || isFlagged) continue;
+			if (isHidden(tile) || isFlagged(tile)) continue;
 
 			let hiddenNeighbors = 0;
 			let flaggedNeighbors = 0;
@@ -335,18 +341,14 @@ const solveOnce = () => {
 			let tileVal = parseInt(tile.innerText)
 
 			loopNeighbors(tile, (neighbor => {
-				let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
-				let isFlagged = neighbor.style.backgroundColor == FLAGCOLOR1 || neighbor.style.backgroundColor == FLAGCOLOR2;
-				if (unrevealed) hiddenNeighbors++;
-				if (isFlagged) flaggedNeighbors++;
+				if (isHidden(neighbor)) hiddenNeighbors++;
+				if (isFlagged(neighbor)) flaggedNeighbors++;
 			}))
 
 			if (tileVal == (hiddenNeighbors + flaggedNeighbors)) {
 				loopNeighbors(tile, (neighbor => {
-					let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
-					if (unrevealed) {
-						let [ x, y ] = getXY(neighbor)
-						neighbor.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
+					if (isHidden(neighbor)) {
+						setFlag(neighbor)
 						newFlags++;
 					};
 				}))

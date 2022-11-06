@@ -11,7 +11,7 @@
 
 # Code
  * **optimize code (lots of reused code throughout, unneeded variables, etc)**
- * add isFlag, setFlag, isHidden, setHidden, etc. with the goal of decoupling the logic from the rendered map
+ * add ~~isFlag, setFlag, isHidden, setHidden~~, etc. with the goal of decoupling the logic from the rendered map
 
 # Extra functionality
  * minefield size settings
