@@ -7,6 +7,7 @@
  * neighboring tile depress visual (NOT stepping)
  * ~~redesign RNG to be more pseudo. the initial start of the game feels needlessly rough, so it'd be nice to always start on a 0.~~
  * make the always-0-start code more efficient
+ * clean up the game, making it more first time user-friendly and less dev-modey
 
 # Code
  * **optimize code (lots of reused code throughout, unneeded variables, etc)**
