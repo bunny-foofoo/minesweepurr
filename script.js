@@ -14,7 +14,10 @@ const HIDDENCOLOR2 = 'rgb(62, 59, 59)'; // #3e3b3b
 const MINEASCII = 'ϴ';
 const MINECOLOR = 'rgb(194, 50, 62)'; // #450000 orig // rgb(94, 50, 237) poipol
 
-const FLAGCOLOR = 'rgb(230, 146, 37)'; // #e69225
+const FLAGCOLOR1 = 'rgb(212, 134, 34)'; // LIGHTER FLAG
+const FLAGCOLOR2 = 'rgb(206, 127, 25)'; // DARKER  FLAG
+// Contrasting set: FLAG1 (#e69225) | FLAG2 (#cc7b12)
+// More subtle set: FLAG1 (#D48622) | FLAG2 (#CE7F19)
 
 const COLORS = [
 	'rgb(24, 137, 230)',
@@ -174,7 +177,7 @@ const clickEvent = e => {
 		return plant(x, y);
 	}
 
-	if (e.target.style.backgroundColor == FLAGCOLOR) return;
+	if (e.target.style.backgroundColor == FLAGCOLOR1 || e.target.style.backgroundColor == FLAGCOLOR2) return;
 	
 	if (e.target.innerText == MINEASCII) {
 		// clicked on a mine
@@ -208,10 +211,11 @@ const rightclick = e => {
 
 	let tile = e.target
 	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+	let isFlagged = e.target.style.backgroundColor == FLAGCOLOR1 || e.target.style.backgroundColor == FLAGCOLOR2;
 
 	if (unrevealed) {
-		tile.style.backgroundColor = FLAGCOLOR;
+		let [ x, y ] = getXY(tile)
+		tile.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
 	} else if (isFlagged) {
 		makeInvis(tile);
 	}
@@ -221,7 +225,7 @@ const rightclick = e => {
 
 const middleReveal = tile => {
 	let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-	let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+	let isFlagged = tile.style.backgroundColor == FLAGCOLOR1 || tile.style.backgroundColor == FLAGCOLOR2;
 	if (unrevealed || isFlagged) return;
 
 	// number of neighboring flags
@@ -230,7 +234,7 @@ const middleReveal = tile => {
 	let neighbors = [];
 
 	loopNeighbors(tile, (neighbor => {
-		if (neighbor.style.backgroundColor == FLAGCOLOR) {
+		if (neighbor.style.backgroundColor == FLAGCOLOR1 || neighbor.style.backgroundColor == FLAGCOLOR2) {
 			flagCount++;
 		} else {
 			neighbors.push(neighbor);
@@ -322,7 +326,7 @@ const solveOnce = () => {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			
 			let unrevealed = tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;
-			let isFlagged = tile.style.backgroundColor == FLAGCOLOR;
+			let isFlagged = tile.style.backgroundColor == FLAGCOLOR1 || tile.style.backgroundColor == FLAGCOLOR2;
 			if (unrevealed || isFlagged) continue;
 
 			let hiddenNeighbors = 0;
@@ -332,7 +336,7 @@ const solveOnce = () => {
 
 			loopNeighbors(tile, (neighbor => {
 				let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
-				let isFlagged = neighbor.style.backgroundColor == FLAGCOLOR;
+				let isFlagged = neighbor.style.backgroundColor == FLAGCOLOR1 || neighbor.style.backgroundColor == FLAGCOLOR2;
 				if (unrevealed) hiddenNeighbors++;
 				if (isFlagged) flaggedNeighbors++;
 			}))
@@ -341,7 +345,8 @@ const solveOnce = () => {
 				loopNeighbors(tile, (neighbor => {
 					let unrevealed = neighbor.style.backgroundColor == HIDDENCOLOR1 || neighbor.style.backgroundColor == HIDDENCOLOR2;
 					if (unrevealed) {
-						neighbor.style.backgroundColor = FLAGCOLOR;
+						let [ x, y ] = getXY(neighbor)
+						neighbor.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
 						newFlags++;
 					};
 				}))
