@@ -37,6 +37,7 @@ const NUMMINES = 50;
 let currentMines = 0;
 
 let freshStart = true;
+let freshPaint = false;
 
 let painting = false;
 
@@ -187,6 +188,8 @@ const revealAllMines = () => {
 
 const clickEvent = e => {
 	if (GG) return;
+
+	freshPaint = false;
 
 	if (freshStart) {
 		while (e.target.innerText != 0) {
@@ -340,6 +343,7 @@ const togglePainting = e => {
 				makeHidden(tile);
 			}
 		}
+		freshPaint = true;
 	}
 	generateButton.hidden = !painting;
 	clearButton.hidden = !painting;
@@ -387,6 +391,20 @@ const revealOnce = () => {
 }
 
 const autoSolve = async () => {
+	if (freshStart || freshPaint) {
+		// select a random tile if the map hasn't been touched yet
+		let foundZero = false;
+		let attempts = 0;
+		let tile, x, y;
+		while (!foundZero && attempts < 50) {
+			attempts++;
+			x = Math.floor(Math.random() * WIDTH);
+			y = Math.floor(Math.random() * HEIGHT);
+			tile = document.querySelector(`#tile_${y}_${x}`);
+			foundZero = tile.innerText == '0';
+		}
+		clickEvent({target: tile});
+	}
 	let flags;
 	let failedAttempts = 0;
 	while (failedAttempts < 2) {
