@@ -311,12 +311,18 @@ const initTiles = () => {
 	}
 }
 
-const clearField = () => {
+const clearField = (reveal = false) => {
 	for (let i = 0; i < HEIGHT; i++) {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
 			tile.innerText = '0';
-			makeHidden(tile);
+			if (reveal) {
+				makeVisible(tile);
+				tile.style.fontSize = '0em';
+			} else {
+				makeHidden(tile);
+			}
+
 		}
 	}
 	currentMines = 0;
@@ -404,7 +410,9 @@ const solverToggle = () => {
 }
 
 clearButton = document.querySelector('.clear');
-clearButton.addEventListener('click', clearField);
+clearButton.addEventListener('click', () => {
+	clearField(true);
+});
 
 resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', () => {
