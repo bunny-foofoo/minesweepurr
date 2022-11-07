@@ -198,7 +198,7 @@ const clickEvent = e => {
 	if (GG) return;
 
 	freshPaint = false;
-
+	
 	if (freshStart) {
 		while (e.target.innerText != 0) {
 			clearField();
@@ -206,12 +206,12 @@ const clickEvent = e => {
 		}
 		freshStart = false;
 	}
-
+	
 	if (painting) {
 		let [ x, y ] = getXY(e.target)
 		return plant(x, y);
 	}
-
+	
 	if (isFlagged(e.target)) return;
 	
 	if (e.target.innerText == MINEASCII) {
@@ -221,6 +221,8 @@ const clickEvent = e => {
 		revealAllMines();
 		//e.target.style.color = 'rgb(255, 75, 75)';
 	} else {
+		if (!isHidden(e.target)) return;
+		setAutoState(true);
 		if (e.target.innerText != '0') {
 			e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
 			makeVisible(e.target);
@@ -352,7 +354,7 @@ const togglePainting = e => {
 			}
 		}
 		freshPaint = true;
-		autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
+		setAutoState(true);
 	}
 	generateButton.hidden = !painting;
 	clearButton.hidden = !painting;
@@ -399,6 +401,14 @@ const revealOnce = () => {
 	}
 }
 
+const setAutoState = (enabled) => {
+	if (enabled) {
+		autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
+	} else {
+		autoSolveButton.style.backgroundColor = 'rgb(120, 43, 28)';
+	}
+}
+
 const autoSolve = async () => {
 	if (freshStart || freshPaint) {
 		// select a random tile if the map hasn't been touched yet
@@ -426,7 +436,7 @@ const autoSolve = async () => {
 			if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
 		}
 	}
-	autoSolveButton.style.backgroundColor = 'rgb(120, 43, 28)';
+	setAutoState(false);
 }
 
 const solverToggle = () => {
@@ -445,7 +455,7 @@ clearButton.addEventListener('click', () => {
 resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', () => {
 	freshStart = true;
-	autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
+	setAutoState(true);
 	clearField();
 	plantMines();
 });
