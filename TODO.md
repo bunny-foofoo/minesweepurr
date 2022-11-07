@@ -42,3 +42,4 @@
  * fix gross tile hover transition (especially the z-index)
  * fix 'you died' text being out of position
  * **add cats!!**
+ * make the extra buttons slide down, instead of just appearing to the side
