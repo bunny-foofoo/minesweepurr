@@ -120,8 +120,37 @@ button {
 	margin: 5px;
 }
 
-button:hover {
+.reset:hover {
 	background-color: rgb(155, 84, 122); /* Green */
 	color: white;
+	cursor: pointer;
+}
+
+.autosolve, .solve, .reveal {
+	background-color: rgb(230, 172, 48);
+	cursor: pointer;
+}
+
+.autosolve:hover, .solve:hover, .reveal:hover {
+	background-color: rgb(191, 110, 34);
+	cursor: pointer;
+}
+
+.clear, .generate {
+	background-color: rgb(109, 230, 48);
+	cursor: pointer;
+}
+
+.clear:hover, .generate:hover {
+	background-color: rgb(34, 191, 58);
+	cursor: pointer;
+}
+
+.paint {
+	background-color: green;
+	cursor: pointer;
+}
+.solver {
+	background-color: rgb(217, 94, 46);
 	cursor: pointer;
 }

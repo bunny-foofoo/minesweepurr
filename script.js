@@ -42,6 +42,17 @@ let painting = false;
 
 const SOLVESPEED = 250;
 
+let generateButton;
+let resetButton;
+let solveButton;
+let autoSolveButton;
+let paintButton;
+let revealButton;
+let clearButton;
+let solverButton;
+
+let solverMode = false;
+
 const getXY = tile => {
 	const splitId = tile.id.split('_');
 	return [ parseInt(splitId[2]), parseInt(splitId[1]) ]
@@ -324,7 +335,9 @@ const togglePainting = e => {
 			}
 		}
 	}
-	e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
+	generateButton.hidden = !painting;
+	clearButton.hidden = !painting;
+	//e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
 
 const solveOnce = () => {
@@ -382,30 +395,41 @@ const autoSolve = async () => {
 	}
 }
 
-const clearButton = document.querySelector('.clear');
+const solverToggle = () => {
+	solverMode = !solverMode;
+	//solverButton.style.backgroundColor = solverMode ? 'rgb(217, 94, 46)' : 'rgb(179, 103, 144)';
+	revealButton.hidden = !solverMode;
+	solveButton.hidden = !solverMode;
+	autoSolveButton.hidden = !solverMode;
+}
+
+clearButton = document.querySelector('.clear');
 clearButton.addEventListener('click', clearField);
 
-const resetButton = document.querySelector('.reset');
+resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', () => {
 	freshStart = true;
 	clearField();
 	plantMines();
 });
 
-const generateButton = document.querySelector('.generate');
+generateButton = document.querySelector('.generate');
 generateButton.addEventListener('click', plantMines);
 
-const paintButton = document.querySelector('.paint');
+paintButton = document.querySelector('.paint');
 paintButton.addEventListener('click', togglePainting);
 
-const solveButton = document.querySelector('.solve');
+solveButton = document.querySelector('.solve');
 solveButton.addEventListener('click', solveOnce);
 
-const revealButton = document.querySelector('.reveal');
+revealButton = document.querySelector('.reveal');
 revealButton.addEventListener('click', revealOnce);
 
-const autoSolveButton = document.querySelector('.autosolve');
+autoSolveButton = document.querySelector('.autosolve');
 autoSolveButton.addEventListener('click', autoSolve);
+
+solverButton = document.querySelector('.solver');
+solverButton.addEventListener('click', solverToggle);
 
 initTiles();
 if (!painting) plantMines();
