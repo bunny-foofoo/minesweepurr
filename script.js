@@ -42,6 +42,7 @@ let freshPaint = false;
 let painting = false;
 
 const SOLVESPEED = 250;
+const GGSPEED = 0;
 
 let generateButton;
 let resetButton;
@@ -175,12 +176,15 @@ const clearNeighbors = tile => {
 	}));
 }
 
-const revealAllMines = () => {
+const revealAllMines = async () => {
 	for (let i = 0; i < HEIGHT; i++) {
 		for (let j = 0; j < WIDTH; j++) {
 			const tile = document.querySelector(`#tile_${i}_${j}`);
-			if (tile.innerText == MINEASCII) {
-				makeVisible(tile);
+			makeVisible(tile);
+			if (tile.innerText == MINEASCII && GGSPEED != 0) {
+				await new Promise(r => setTimeout(r, GGSPEED));
+			} else if (tile.innerText == '0') {
+				tile.style.fontSize = '0em';
 			}
 		}
 	}
