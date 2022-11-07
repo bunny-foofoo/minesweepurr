@@ -61,6 +61,9 @@ header {
 	flex-wrap: wrap;
 	/* flex-direction: column; */
 	max-width: 40vw;
+	border-radius: 7px;
+	/* outline: 1px solid rgb(63, 60, 60); */
+	box-shadow: 0 10px 60px 0 rgba(20, 25, 91, 0.408);
 }
 
 .tile {
