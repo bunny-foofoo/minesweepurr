@@ -137,6 +137,7 @@ button:hover {
 
 .autosolve, .solve, .reveal {
 	background-color: rgb(230, 172, 48);
+	transition-duration: 0.25s;
 }
 
 .autosolve:hover, .solve:hover, .reveal:hover {

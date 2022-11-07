@@ -348,6 +348,7 @@ const togglePainting = e => {
 			}
 		}
 		freshPaint = true;
+		autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
 	}
 	generateButton.hidden = !painting;
 	clearButton.hidden = !painting;
@@ -418,9 +419,10 @@ const autoSolve = async () => {
 			failedAttempts++;
 		} else {
 			failedAttempts = 0;
+			if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
 		}
-		if (SOLVESPEED != 0) await new Promise(r => setTimeout(r, SOLVESPEED));
 	}
+	autoSolveButton.style.backgroundColor = 'rgb(120, 43, 28)';
 }
 
 const solverToggle = () => {
@@ -439,6 +441,7 @@ clearButton.addEventListener('click', () => {
 resetButton = document.querySelector('.reset');
 resetButton.addEventListener('click', () => {
 	freshStart = true;
+	autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
 	clearField();
 	plantMines();
 });
