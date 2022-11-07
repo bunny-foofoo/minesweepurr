@@ -20,6 +20,7 @@ const FLAGCOLOR2 = 'rgb(206, 127, 25)'; // DARKER  FLAG
 // More subtle set: FLAG1 (#D48622) | FLAG2 (#CE7F19)
 
 const COLORS = [
+	'rgba(0,0,0,0)',
 	'rgb(24, 137, 230)',
 	'rgb(19, 205, 146)',
 	'rgb(46, 215, 16)',
@@ -80,17 +81,20 @@ const loopNeighbors = (tile, func) => {
 }
 
 const makeVisible = tile => {
-	tile.style.fontSize = '1em';
+	//tile.style.fontSize = '1em';
 	let [ x, y ] = getXY(tile);
 	if (tile.innerText == MINEASCII) {
 		tile.style.backgroundColor = MINECOLOR;
 	} else {
 		tile.style.backgroundColor = ((x + y) % 2 == 0) ? NORMALCOLOR1 : NORMALCOLOR2;
+		let nval = parseInt(tile.innerText)
+		tile.style.color = COLORS[nval];
 	}
 }
 
 const makeHidden = tile => {
-	tile.style.fontSize = '0em';
+	//tile.style.fontSize = '0em';
+	tile.style.color = 'rgba(0,0,0,0)';
 	let [ x, y ] = getXY(tile);
 	tile.style.backgroundColor = ((x + y) % 2 == 0) ? HIDDENCOLOR1 : HIDDENCOLOR2; 
 }
@@ -123,7 +127,7 @@ const incrementNeighbors = tile => {
 		if (neighbor.innerText != MINEASCII) {
 			let nval = parseInt(neighbor.innerText)
 			neighbor.innerText = nval + 1;
-			neighbor.style.color = COLORS[nval];
+			// neighbor.style.color = COLORS[nval];
 		}
 		// this adds an interesting behavior where pressing `reset` while painting
 		// will cause a new minefield to generate with all tiles (except 0) revealed
@@ -183,9 +187,9 @@ const revealAllMines = async () => {
 			makeVisible(tile);
 			if (tile.innerText == MINEASCII && GGSPEED != 0) {
 				await new Promise(r => setTimeout(r, GGSPEED));
-			} else if (tile.innerText == '0') {
-				tile.style.fontSize = '0em';
-			}
+			} //else if (tile.innerText == '0') {
+				//tile.style.fontSize = '0em';
+			//}
 		}
 	}
 }
@@ -325,7 +329,7 @@ const clearField = (reveal = false) => {
 			tile.innerText = '0';
 			if (reveal) {
 				makeVisible(tile);
-				tile.style.fontSize = '0em';
+				// tile.style.fontSize = '0em';
 			} else {
 				makeHidden(tile);
 			}
