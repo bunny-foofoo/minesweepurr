@@ -80,6 +80,32 @@ header {
 	color: rgb(0,0,0);
 	/* font-size: 0; */
 	transition: background-color 0.3s;
+	position: relative;
+	/* z-index: 4; */
+	overflow: hidden;
+	z-index: 15;
+	/* box-shadow: 0 2px 5px rgba(0,0,0,0.5); */
+}
+
+.hoverTile {
+	width: 80px;
+	height: 80px;
+	/* backdrop-filter: brightness(1.5); */
+	outline: 1px solid rgba(0, 0, 0, 0.5); 
+	z-index: 5;
+	position: absolute;
+	pointer-events: none;
+	visibility: hidden;
+
+	/*
+	the border radius looks ugly when next to other tiles,
+	but enabling it prevents the hover tile from clipping the
+	minefield corners. not sure how to fix this.
+	*/
+	/* border-radius: 7px; */
+
+	box-shadow: inset 0 0 10px 0 rgba(3, 3, 3, 0.75);
+	
 }
 
 /*

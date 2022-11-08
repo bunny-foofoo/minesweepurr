@@ -55,7 +55,11 @@ let revealButton;
 let clearButton;
 let solverButton;
 
+let hoverTile = null;
+
 let solverMode = false;
+
+let middleMouseDown = false;
 
 const getXY = tile => {
 	const splitId = tile.id.split('_');
@@ -273,15 +277,27 @@ const clickEvent = e => {
 	}
 }
 
-const mousein = e => {
+const mousein = (e, outline = 1) => {
 	if (GG) return;
-	e.target.style.outline = '1px solid grey';
-	e.target.style.zIndex = 2;
+	// e.target.style.outline = `${outline}px solid grey`;
+	e.target.style.zIndex = 5 ;
+	if (outline != 1) {
+		e.target.style.filter = 'brightness(1.075)';
+	}
+	if (!isHidden(e.target)) {
+		e.target.style.zIndex = 15;
+	}
 }
 
 const mouseout = e => {
 	e.target.style.outline = '';
-	e.target.style.zIndex = 1;
+	e.target.style.zIndex = 20;
+	e.target.style.filter = '';
+	loopNeighbors(e.target, (neighbor => {
+		loopNeighbors(neighbor, (n2 => {
+			n2.style.zIndex = 10;
+		}));
+	}));
 }
 
 const rightclick = e => {
@@ -334,6 +350,72 @@ const middleReveal = tile => {
 	});
 }
 
+const highlightNeighbors = tile => {
+	//if (isHidden(tile) || isFlagged(tile)) return;
+
+	loopNeighbors(tile, (neighbor => {
+		if (isHidden(neighbor)) {
+			mousein({target: neighbor}, 0);
+		}
+	}));
+}
+
+const unhighlightNeighbors = tile => {
+	//if (isHidden(tile) || isFlagged(tile)) return;
+
+	loopNeighbors(tile, (neighbor => {
+		mouseout({target: neighbor});
+	}));
+}
+
+const moveAndScaleHoverTile = (tile) => {
+	let [ x, y ] = getXY(tile);
+	// below is a disgusting mess
+	// in a gist, it scales the hover tile's size based on how many tiles it should cover
+	// and offsets it accordingly
+
+	// when imagining a 3x3 grid around the tile which currently has the mouse over it,
+	// `tile` represents the center tile (with mouse over it)
+	// `tile2` represents the top left tile (up 1, left 1)
+	// `tile3` represents the bottom right tile (down 1, right 1)
+	
+	let tileSize = tile.offsetWidth; // height will be the same 
+	let offsetLeft = tile.offsetLeft - 0;
+	let offsetTop = tile.offsetTop - 0;
+	let width = tileSize;
+	let height = tileSize;
+	let y2 = Math.max(y - 1, 0);
+	let x2 = Math.max(x - 1, 0);
+	let tile2 = document.querySelector(`#tile_${y2}_${x2}`); // top left
+	// not hugging the left edge
+	if (x != x2) {
+		offsetLeft = tile2.offsetLeft;
+		width += tile2.offsetWidth;
+	}
+	// not hugging the top edge
+	if (y != y2) {
+		offsetTop = tile2.offsetTop;
+		height += tile2.offsetHeight;
+	}
+	let y3 = Math.min(y + 1, HEIGHT - 1);
+	let x3 = Math.min(x + 1, WIDTH - 1);
+	let tile3 = document.querySelector(`#tile_${y3}_${x3}`); // bottom right
+	// not hugging the right edge
+	if (x != x3) {
+		width += tile3.offsetWidth;
+	}
+	// not hugging the bottom edge
+	if (y != y3) {
+		height += tile3.offsetHeight;
+	}
+	hoverTile.style.left = `${offsetLeft}px`;
+	hoverTile.style.top = `${offsetTop}px`;
+	hoverTile.style.width = `${width}px`;
+	hoverTile.style.height = `${height}px`;
+	hoverTile.style.visibility = middleMouseDown ? 'visible' : 'hidden';
+}
+
+
 const middleclick = e => {
 	if (e.button != 1) return;
 
@@ -358,6 +440,36 @@ const initTiles = () => {
 			tile.addEventListener('mouseenter', mousein);
 			tile.addEventListener('mouseleave', mouseout);
 			tile.addEventListener('auxclick', middleclick);
+			// event listener for middle mouse down
+			tile.addEventListener('mousedown', e => {
+				if (e.button != 1) return;
+				middleMouseDown = true;
+				highlightNeighbors(tile);
+				moveAndScaleHoverTile(tile);
+			});
+			// event listener for middle click up
+			tile.addEventListener('mouseup', e => {
+				if (e.button != 1) return;
+				middleMouseDown = false;
+				unhighlightNeighbors(tile);
+				moveAndScaleHoverTile(tile);
+			});
+
+			if (hoverTile == null) {
+				hoverTile = document.createElement('div');
+				hoverTile.classList.add('hoverTile');
+				document.body.appendChild(hoverTile);
+			}
+
+			tile.addEventListener('mouseleave', e => {
+				unhighlightNeighbors(e.target);
+			});
+			tile.addEventListener('mouseenter', e => {
+				if (middleMouseDown) highlightNeighbors(e.target);
+				moveAndScaleHoverTile(e.target);
+
+			});
+
 			minefield.appendChild(tile);
 		}
 	}
