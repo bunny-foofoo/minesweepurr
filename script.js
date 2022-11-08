@@ -36,6 +36,7 @@ const PLANTSPEED = 0;
 const NUMMINES = 50;
 
 let currentMines = 0;
+let flagsUsed = 0;
 
 let freshStart = true;
 let freshPaint = false;
@@ -103,7 +104,30 @@ const isHidden = tile => {
 	return tile.style.backgroundColor == HIDDENCOLOR1 || tile.style.backgroundColor == HIDDENCOLOR2;;
 }
 
+const gameover = () => {
+	GG = true;
+	sub.style.color = 'rgb(255, 145, 225)';
+	sub.innerText = 'you died!';
+	revealAllMines();
+}
+
+const updateFlagText = () => {
+	sub.innerText = `${currentMines - flagsUsed} flags left`;
+	// set sub color as a gradient
+	// from white to red
+	// based on flagsUsed / currentMines
+	let percent = flagsUsed / currentMines;
+	let r = Math.floor(140 + (255 * percent));
+	let g = Math.floor(31 + (255 * percent));
+	let b = Math.floor(43 + (255 * percent));
+	let color = `rgb(${r}, ${g}, ${b})`;
+	sub.style.color = color;
+}
+
 const setFlag = tile => {
+	if (flagsUsed == currentMines) return;
+	flagsUsed++;
+	updateFlagText();
 	let [ x, y ] = getXY(tile)
 	tile.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
 }
@@ -209,6 +233,7 @@ const clickEvent = e => {
 	
 	if (painting) {
 		let [ x, y ] = getXY(e.target)
+		updateFlagText();
 		return plant(x, y);
 	}
 	
@@ -216,10 +241,7 @@ const clickEvent = e => {
 	
 	if (e.target.innerText == MINEASCII) {
 		// clicked on a mine
-		GG = true;
-		sub.innerText = 'you died';
-		revealAllMines();
-		//e.target.style.color = 'rgb(255, 75, 75)';
+		gameover();
 	} else {
 		if (!isHidden(e.target)) return;
 		setAutoState(true);
@@ -252,6 +274,7 @@ const rightclick = e => {
 		setFlag(tile);
 	} else if (isFlagged(tile)) {
 		makeHidden(tile);
+		flagsUsed--;
 	}
  
 	return false;
@@ -279,11 +302,8 @@ const middleReveal = tile => {
 
 	neighbors.forEach(neighby => {
 		if (neighby.innerText == MINEASCII) {
-			// clicked on a mine
-			GG = true;
-			sub.innerText = 'you died';
-			revealAllMines();
-			//neighby.style.color = 'rgb(255, 75, 75)';
+			// revealed a mine
+			gameover();
 		} else {
 			if (neighby.innerText != '0') {
 				neighby.style.color = COLORS[parseInt(neighby.innerText) - 1];
@@ -339,6 +359,7 @@ const clearField = (reveal = false) => {
 		}
 	}
 	currentMines = 0;
+	flagsUsed = 0;
 	GG = false;
 	sub.innerText = '​';
 }
@@ -480,4 +501,4 @@ solverButton.addEventListener('click', solverToggle);
 
 initTiles();
 if (!painting) plantMines();
- 
+sub.innerText = '​';
