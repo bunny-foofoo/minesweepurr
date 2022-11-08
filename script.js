@@ -111,6 +111,22 @@ const gameover = () => {
 	revealAllMines();
 }
 
+const checkWin = () => {
+	let tiles = document.querySelectorAll('.tile');
+	let win = true;
+	for (let i = 0; i < tiles.length; i++) {
+		let tile = tiles[i];
+		if (tile.innerText == MINEASCII && !isFlagged(tile)) {
+			win = false;
+			break;
+		}
+	}
+	if (win) {
+		sub.style.color = 'rgb(0, 255, 0)';
+		sub.innerText = 'you won!';
+	}
+}
+
 const updateFlagText = () => {
 	sub.innerText = `${currentMines - flagsUsed} flags left`;
 	// set sub color as a gradient
@@ -130,6 +146,9 @@ const setFlag = tile => {
 	updateFlagText();
 	let [ x, y ] = getXY(tile)
 	tile.style.backgroundColor = ((x + y) % 2 == 0) ? FLAGCOLOR1 : FLAGCOLOR2;
+	if (flagsUsed == currentMines) {
+		checkWin();
+	}
 }
 
 const isFlagged = tile => {
