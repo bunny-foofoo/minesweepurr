@@ -356,8 +356,8 @@ const togglePainting = e => {
 		freshPaint = true;
 		setAutoState(true);
 	}
-	generateButton.hidden = !painting;
-	clearButton.hidden = !painting;
+	generateButton.style.visibility = (!painting) ? 'hidden' : 'visible';
+	clearButton.style.visibility = (!painting) ? 'hidden' : 'visible';
 	//e.target.style.backgroundColor = painting ? 'green' : 'rgb(179, 103, 144)';
 }
 
@@ -442,9 +442,9 @@ const autoSolve = async () => {
 const solverToggle = () => {
 	solverMode = !solverMode;
 	//solverButton.style.backgroundColor = solverMode ? 'rgb(217, 94, 46)' : 'rgb(179, 103, 144)';
-	revealButton.hidden = !solverMode;
-	solveButton.hidden = !solverMode;
-	autoSolveButton.hidden = !solverMode;
+	revealButton.style.visibility = (!solverMode) ? 'hidden' : 'visible';
+	solveButton.style.visibility = (!solverMode) ? 'hidden' : 'visible';
+	autoSolveButton.style.visibility = (!solverMode) ? 'hidden' : 'visible';
 }
 
 clearButton = document.querySelector('.clear');
