@@ -8,10 +8,13 @@
  * ~~redesign RNG to be more pseudo. the initial start of the game feels needlessly rough, so it'd be nice to always start on a 0.~~
  * make the always-0-start code more efficient
  * clean up the game, making it more first time user-friendly and less dev-modey
+ * mobile controls
 
 # Code
  * **optimize code (lots of reused code throughout, unneeded variables, etc)**
  * add ~~isFlag, setFlag, isHidden, setHidden~~, etc. with the goal of decoupling the logic from the rendered map
+ * optimize middle mouse functionality
+ * fix middle mouse highlighting with different view mode (wider style breaks it for some reason)
 
 # Extra functionality
  * minefield size settings
