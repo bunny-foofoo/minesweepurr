@@ -6,7 +6,6 @@
  * ~~that thing where you press both left and right click and stuff happens~~
  * ~~neighboring tile depress visual (NOT stepping)~~
  * ~~redesign RNG to be more pseudo. the initial start of the game feels needlessly rough, so it'd be nice to always start on a 0.~~
- * make the always-0-start code more efficient
  * clean up the game, making it more first time user-friendly and less dev-modey
  * mobile controls ( and make mobile tiles larger )
 
@@ -14,8 +13,9 @@
  * optimize and clean js (lots of reused code throughout, unneeded variables, etc)
  * add ~~isFlag, setFlag, isHidden, setHidden~~, etc. with the goal of decoupling the logic from the rendered map
  * refactor middle mouse functionality a little. it's kind of messy and the listener set up is a little wonk.
- * fix middle mouse highlighting with different view mode (wider style breaks it for some reason)
+ * make the always-0-start code more efficient
  * clean up CSS
+
 
 # Extra functionality
  * minefield size settings
@@ -25,13 +25,12 @@
  * ~~mode toggle button~~
  * ~~the mode itself~~
  * ~~`hide` button~~
+ * Better indicator for ~~paint~~ edit mode being on
 
 # Solver
- * port python code
- * optimize algorithm (fix method1 too)
  * ~~autosolve button~~
- * time slider ~~& slowed visuals~~ to see what the solver is doing as it goes
- * decide on a way for it to start (should it really just risk immediate death?)
+ * ~~slowed visuals to see what the solver is doing as it goes~~
+ * ~~decide on a way for it to start (should it really just risk immediate death?)~~
  * add more logic for when the primary solver hits a dead end
 
 # Aesthetics
@@ -47,7 +46,7 @@
  * ~~fix 'you died' text being out of position~~
  * **add cats!!**
  * ~~make the extra buttons slide down, instead of just appearing to the side~~
-
+ * fix middle mouse highlighting with different view mode (wider style breaks it for some reason)
  * Reduce the cartoony vibe
 	* Less cartoony font
 	* Less rounded text
@@ -59,5 +58,4 @@
 		* Flag colors that do not clash
 		* Text label color gradient that doesn't clash and is accessible
  * ~~Give it more of a chill, dark style~~
- * Better indicator for paint mode being on
  * Remove or redesign most buttons to be very new person friendly
