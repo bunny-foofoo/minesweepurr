@@ -4,15 +4,15 @@ const WIDTH = 20;
 const minefield = document.querySelector('.minefield');
 const sub = document.querySelector('.sub')
 
-const NORMALCOLOR1 = '#dcd6d6';
-const NORMALCOLOR2 = '#cbc0c8';
+const NORMALCOLOR1 = '#B0AAAA';
+const NORMALCOLOR2 = '#A1969E';
 
 
 const HIDDENCOLOR1 = 'rgb(84, 76, 76)'; // #544c4c
 const HIDDENCOLOR2 = 'rgb(62, 59, 59)'; // #3e3b3b
 
 const MINEASCII = 'ϴ';
-const MINECOLOR = 'rgb(194, 50, 62)'; // #450000 orig // rgb(94, 50, 237) poipol
+const MINECOLOR = 'rgb(132, 42, 50)'; // #450000 orig // rgb(94, 50, 237) poipol 
 
 const FLAGCOLOR1 = 'rgb(212, 134, 34)'; // LIGHTER FLAG
 const FLAGCOLOR2 = 'rgb(206, 127, 25)'; // DARKER  FLAG
@@ -21,14 +21,14 @@ const FLAGCOLOR2 = 'rgb(206, 127, 25)'; // DARKER  FLAG
 
 const COLORS = [
 	'rgba(0,0,0,0)',
-	'rgb(24, 137, 230)',
-	'rgb(19, 205, 146)',
-	'rgb(46, 215, 16)',
-	'rgb(124, 153, 36)',
-	'rgb(176, 126, 2)',
-	'rgb(176, 31, 2)',
-	'rgb(224, 77, 226)',
-	'rgb(129, 34, 230)',
+	'rgb(253, 209, 170)',
+	'rgb(253, 164, 119)',
+	'rgb(244, 116, 99)',
+	'rgb(165, 68, 77)',
+	'rgb(174, 83, 104)',
+	'rgb(132, 68, 92)',
+	'rgb(171, 88, 118)',
+	'rgb(115, 64, 90)',
 ]
 
 let GG = false;
@@ -61,6 +61,8 @@ let solverMode = false;
 
 let middleMouseDown = false;
 
+let isSolving = false;
+
 const getXY = tile => {
 	const splitId = tile.id.split('_');
 	return [ parseInt(splitId[2]), parseInt(splitId[1]) ]
@@ -87,6 +89,7 @@ const loopNeighbors = (tile, func) => {
 
 const makeVisible = tile => {
 	//tile.style.fontSize = '1em';
+	if (!isHidden) return;
 	let [ x, y ] = getXY(tile);
 	if (tile.innerText == MINEASCII) {
 		tile.style.backgroundColor = MINECOLOR;
@@ -126,7 +129,7 @@ const checkWin = () => {
 		}
 	}
 	if (win) {
-		sub.style.color = 'rgb(0, 255, 0)';
+		sub.style.color = 'rgb(8, 115, 43)';
 		sub.innerText = 'you won!';
 	}
 }
@@ -137,9 +140,9 @@ const updateFlagText = () => {
 	// from white to red
 	// based on flagsUsed / currentMines
 	let percent = flagsUsed / currentMines;
-	let r = Math.floor(140 + (255 * percent));
-	let g = Math.floor(31 + (255 * percent));
-	let b = Math.floor(43 + (255 * percent));
+	let r = Math.floor(242 + ((150 / currentMines) * ((flagsUsed - 1) * 1.2)));
+	let g = Math.floor(107 + ((150 / currentMines) * ((flagsUsed - 1) * 1.2)));
+	let b = Math.floor(107 + ((150 / currentMines) * ((flagsUsed - 1) * 1.2))); 
 	let color = `rgb(${r}, ${g}, ${b})`;
 	sub.style.color = color;
 }
@@ -267,7 +270,7 @@ const clickEvent = e => {
 		gameover();
 	} else {
 		if (!isHidden(e.target)) return;
-		setAutoState(true);
+		setAutoState(!isSolving);
 		if (e.target.innerText != '0') {
 			e.target.style.color = COLORS[parseInt(e.target.innerText) - 1];
 			makeVisible(e.target);
@@ -554,14 +557,24 @@ const revealOnce = () => {
 }
 
 const setAutoState = (enabled) => {
+	console.log('auto state set to', enabled, 'isSolving', isSolving);
 	if (enabled) {
-		autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
+		// autoSolveButton.style.backgroundColor = 'rgb(230, 172, 48)';
+		autoSolveButton.style.filter = 'brightness(1)';
+		// enable point events
+		autoSolveButton.style.pointerEvents = 'auto';
 	} else {
-		autoSolveButton.style.backgroundColor = 'rgb(120, 43, 28)';
+		// autoSolveButton.style.backgroundColor = 'rgb(120, 43, 28)';
+		autoSolveButton.style.filter = 'brightness(0.66)';
+		// disable point events
+		autoSolveButton.style.pointerEvents = 'none';
 	}
 }
 
 const autoSolve = async () => {
+	setAutoState(false);
+	if (isSolving) return;
+	isSolving = true;
 	if (freshStart || freshPaint) {
 		// select a random tile if the map hasn't been touched yet
 		let foundZero = false;
@@ -589,6 +602,7 @@ const autoSolve = async () => {
 		}
 	}
 	setAutoState(false);
+	isSolving = false
 }
 
 const solverToggle = () => {

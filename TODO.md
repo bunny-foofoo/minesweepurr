@@ -15,6 +15,7 @@
  * add ~~isFlag, setFlag, isHidden, setHidden~~, etc. with the goal of decoupling the logic from the rendered map
  * optimize middle mouse functionality
  * fix middle mouse highlighting with different view mode (wider style breaks it for some reason)
+ * Clean up CSS
 
 # Extra functionality
  * minefield size settings
@@ -46,3 +47,18 @@
  * fix 'you died' text being out of position
  * **add cats!!**
  * make the extra buttons slide down, instead of just appearing to the side
+
+ * Reduce the cartoony vibe
+	* Less cartoony font
+	* Less rounded text
+	* Less rounded buttons
+		* Re order to reset solve edit? seems better for arrangement based on priority/usage freq
+	* Not cartoony cats
+	* Easy on the eyes, not color clashing sweeper board
+		* Enough contrast between outer (hidden) and under (normal) colors to differentiate easily
+		* Flag colors that do not clash
+		* Text label color gradient that doesn't clash and is accessible
+ * Give it more of a chill, dark style
+ * Go for LEDs, soft glows, etc. night life aesth
+ * Better indicator for paint mode being on
+ * Remove or redesign most buttons to be very new person friendly
