@@ -1,4 +1,4 @@
 # minesweepurr
-A cozy rendition of the classic game, Minesweeper!
+A cozy rendition of Minesweeper.
 
-Built from scratch usign vanilla JavaScript, HTML, and CSS.
+Built from scratch using vanilla JavaScript, HTML, and CSS.
